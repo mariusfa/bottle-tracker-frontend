@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@preact/signals": "^2.0.0",
     "preact": "^10.25.3",
     "preact-iso": "^2.8.1"
   },
