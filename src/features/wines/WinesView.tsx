@@ -9,7 +9,7 @@ interface Props {
 export const WinesView: FunctionalComponent<Props> = ({ wines, addWine }) => {
 	return (
 		<>
-			<button onClick={addWine}>Add wine</button>
+			<button onClick={addWine}>New wine</button>
 			<ul>
 				{wines.map(wine => (
 					<li key={wine.name}>{wine.name}</li>
