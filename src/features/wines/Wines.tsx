@@ -3,10 +3,11 @@ import { Wine } from "./types"
 import { WinesView } from "./WinesView"
 import { useEffect } from "preact/hooks"
 import { useLocation } from "preact-iso"
+import { FunctionalComponent } from "preact"
 
 const apiUrl = 'https://bottle-tracker-go-api-production.up.railway.app/wines'
 
-export const Wines = () => {
+export const Wines: FunctionalComponent = () => {
 	const wines = useSignal<Wine[]>([])
 	const { route } = useLocation()
 
@@ -20,7 +21,7 @@ export const Wines = () => {
 	}, [])
 
 	const addWine = () => {
-		route('/wines/new')
+		route('/new')
 	}
 
 	return (
