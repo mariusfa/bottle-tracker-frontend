@@ -1,6 +1,12 @@
 import { FunctionalComponent } from "preact";
 import { Values } from "./types";
 import { useSignal } from "@preact/signals";
+import { RoundedBoxContainer } from "../../../components/RoundedBoxContainer";
+import { PrimaryButton } from "../../../components/PrimaryButton";
+import { InputText } from "../../../components/InputText";
+import { Label } from "../../../components/Label";
+import { Heading1 } from "../../../components/Heading1";
+import { useEffect, useRef } from "preact/hooks";
 
 interface Props {
 	handleSubmit: (values: Values) => void;
@@ -8,6 +14,7 @@ interface Props {
 
 export const AddWineForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 	const formValues = useSignal<Values>({ name: "" });
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleOnChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
@@ -19,11 +26,20 @@ export const AddWineForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 		handleSubmit(formValues.value);
 	}
 
+	useEffect(() => {
+		if (inputRef && inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [])
+
 	return (
-		<form onSubmit={onSubmit}>
-			<label class="block" for="name">Name</label>
-			<input class="block" id="name" name="name" type="text" value={formValues.value.name} onChange={handleOnChange} />
-			<button class="block" type="submit">Add wine</button>
-		</form>
+		<RoundedBoxContainer>
+			<Heading1 title="Add wine" />
+			<form onSubmit={onSubmit}>
+				<Label label="Name" forInput="name" />
+				<InputText placeholder="Name" name="name" value={formValues.value.name} onChange={handleOnChange} inputRef={inputRef}/>
+				<PrimaryButton label="Add wine" type="submit" />
+			</form>
+		</RoundedBoxContainer>
 	)
 }

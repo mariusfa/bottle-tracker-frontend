@@ -8,7 +8,7 @@ describe('AddWineForm', () => {
 	test('should render the add wine form', () => {
 		render(<AddWineForm handleSubmit={(_: Values) => { }} />);
 		expect(screen.getByText('Name')).toBeDefined();
-		expect(screen.getByText('Add wine')).toBeDefined();
+		expect(screen.getByRole('button', { name: 'Add wine' })).toBeDefined();
 	});
 
 	test('should submit add wine', async () => {
@@ -19,7 +19,7 @@ describe('AddWineForm', () => {
 
 		render(<AddWineForm handleSubmit={handleSubmit} />);
 		await userEvent.type(screen.getByLabelText('Name'), 'Wine 1');
-		await userEvent.click(screen.getByText('Add wine'));
+		await userEvent.click(screen.getByRole('button', { name: 'Add wine' }));
 		expect(isSubmitted).toBe(true);
 	});
 });
