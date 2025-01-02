@@ -1,5 +1,7 @@
 import { FunctionalComponent } from "preact";
 import { Wine as WineType } from "../types";
+import { RoundedBoxContainer } from "../../../components/RoundedBoxContainer";
+import { Heading1 } from "../../../components/Heading1";
 
 interface Props {
 	wine: WineType;
@@ -16,9 +18,9 @@ export const WineByIdView: FunctionalComponent<Props> =({ wine, isLoading, isErr
 	}
 
 	return (
-		<div>
-			<h1>{wine.name}</h1>
+		<RoundedBoxContainer>
+			<Heading1 title={wine.name} />
 			<p>WIP</p>
-		</div>
+		</RoundedBoxContainer>
 	)
 }
