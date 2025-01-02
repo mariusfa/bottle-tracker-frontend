@@ -3,18 +3,17 @@ import { Wine } from "./types";
 
 interface Props {
 	wines: Wine[];
-	addWine: () => void;
 	deleteWine: (id: string) => void;
 }
 
-export const WinesView: FunctionalComponent<Props> = ({ wines, addWine, deleteWine }) => {
+export const WinesView: FunctionalComponent<Props> = ({ wines, deleteWine }) => {
 	return (
 		<>
-			<button onClick={addWine}>New wine</button>
+			<a href="/new">New wine</a>
 			<ul>
 				{wines.map(wine => (
 					<li key={wine.id}>
-						<span>{wine.name}</span>
+						<a href={`/${wine.id}`}>{wine.name}</a>
 						<button onClick={() => deleteWine(wine.id)}>Delete</button>
 					</li>
 				))}
