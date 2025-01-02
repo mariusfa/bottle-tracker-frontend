@@ -9,7 +9,7 @@ describe('WinesView', () => {
 			{ id: '1', name: 'Wine 1' },
 			{ id: '1', name: 'Wine 2' },
 		];
-		render(<WinesView wines={fakeWines} addWine={() => { }} deleteWine={() => { }} />);
+		render(<WinesView wines={fakeWines} deleteWine={() => { }} />);
 		expect(screen.getByText('Wine 1')).toBeDefined();
 	});
 
