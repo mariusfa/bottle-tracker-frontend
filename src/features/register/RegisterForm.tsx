@@ -14,7 +14,26 @@ interface Props {
 
 export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 	const formValues = useSignal<Values>({ name: "", password: "", passwordConfirmation: "" });
+	const formErrors = useSignal({ name: "", password: "", passwordConfirmation: ""});
 	const inputRef = useRef<HTMLInputElement>(null);
+
+	const validateForm = (values: Values) => {
+		const errors = { name: "", password: "", passwordConfirmation: "" };
+		if (!values.name) {
+			errors.name = "Name is required";
+		}
+		if (!values.password) {
+			errors.password = "Password is required";
+		}
+		if (!values.passwordConfirmation) {
+			errors.passwordConfirmation = "Password confirmation is required";
+		}
+		if (values.password !== values.passwordConfirmation) {
+			errors.password = "Passwords do not match";
+			errors.passwordConfirmation = "Passwords do not match";
+		}
+		return errors;
+	}
 
 	const handleOnChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
@@ -23,6 +42,13 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 
 	const onSubmit = (e: Event) => {
 		e.preventDefault();
+		const errors = validateForm(formValues.value);
+		if (errors.name || errors.password || errors.passwordConfirmation) {
+			formErrors.value = errors;
+			console.log(errors);
+			return;
+		}
+
 		handleSubmit(formValues.value);
 	}
 
