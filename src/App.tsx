@@ -3,6 +3,7 @@ import { Wines } from "./features/wines/Wines"
 import { AddWine } from "./features/wines/add/AddWine"
 import { WineById } from "./features/wines/by-id/WineById"
 import { Header } from "./features/header/Header"
+import { Register } from "./features/register/Register"
 
 export const App = () => {
 	return (
@@ -12,6 +13,7 @@ export const App = () => {
 				<Router>
 					<Route path="/" component={Wines} />
 					<Route path="/new" component={AddWine} />
+					<Route path="/register" component={Register} />
 					<Route path="/:id" component={WineById} />
 					<Route default component={Wines} />
 				</Router>
