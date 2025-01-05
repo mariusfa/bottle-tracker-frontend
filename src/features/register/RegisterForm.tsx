@@ -9,12 +9,13 @@ import { useEffect, useRef } from "preact/hooks";
 import { PrimaryButton } from "../../components/PrimaryButton";
 
 interface Props {
-	handleSubmit: (values: Values) => void;
+	handleSubmit: (values: Values) => Promise<{ error: boolean, conflict: boolean }>;
 }
 
 export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 	const formValues = useSignal<Values>({ name: "", password: "", passwordConfirmation: "" });
-	const formErrors = useSignal({ name: "", password: "", passwordConfirmation: ""});
+	const formErrors = useSignal({ name: "", password: "", passwordConfirmation: "" });
+	const generalError = useSignal(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const validateForm = (values: Values) => {
@@ -38,18 +39,25 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 	const handleOnChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		formValues.value = { ...formValues.value, [target.name]: target.value };
+		formErrors.value = { name: "", password: "", passwordConfirmation: "" };
+		generalError.value = false;
 	}
 
-	const onSubmit = (e: Event) => {
+	const onSubmit = async (e: Event) => {
 		e.preventDefault();
 		const errors = validateForm(formValues.value);
 		if (errors.name || errors.password || errors.passwordConfirmation) {
 			formErrors.value = errors;
-			console.log(errors);
 			return;
 		}
 
-		handleSubmit(formValues.value);
+		const error = await handleSubmit(formValues.value);
+		if (error.conflict) {
+			formErrors.value = { ...formErrors.value, name: "Name already exists" };
+		}
+		if (error.error) {
+			generalError.value = true;
+		}
 	}
 
 	useEffect(() => {
@@ -60,14 +68,18 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 
 	return (
 		<RoundedBoxContainer md={true}>
-			<Heading1 title="Register"/>
+			<Heading1 title="Register" />
+			{generalError.value && <p class="text-red-500 text-xs italic">Failed to register.</p>}
 			<form onSubmit={onSubmit}>
 				<Label label="Name" forInput="name" />
-				<InputText placeholder="Name" name="name" value={formValues.value.name} onChange={handleOnChange} inputRef={inputRef}/>
+				<InputText placeholder="Name" name="name" value={formValues.value.name} type="text" onChange={handleOnChange} inputRef={inputRef} />
+				{formErrors.value.name && <p class="text-red-500 text-xs italic">{formErrors.value.name}</p>}
 				<Label label="Password" forInput="password" />
-				<InputText placeholder="Password" name="password" value={formValues.value.password} onChange={handleOnChange}/>
+				<InputText placeholder="Password" name="password" value={formValues.value.password} type="password" onChange={handleOnChange} />
+				{formErrors.value.password && <p class="text-red-500 text-xs italic">{formErrors.value.password}</p>}
 				<Label label="Password confirmation" forInput="passwordConfirmation" />
-				<InputText placeholder="Password confirmation" name="passwordConfirmation" value={formValues.value.passwordConfirmation} onChange={handleOnChange}/>
+				<InputText placeholder="Password confirmation" name="passwordConfirmation" value={formValues.value.passwordConfirmation} type="password" onChange={handleOnChange} />
+				{formErrors.value.passwordConfirmation && <p class="text-red-500 text-xs italic">{formErrors.value.passwordConfirmation}</p>}
 				<PrimaryButton label="Submit" type="submit" />
 			</form>
 		</RoundedBoxContainer>
