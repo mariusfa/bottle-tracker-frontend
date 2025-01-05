@@ -1,8 +1,8 @@
 import { Values } from "./types"
 
-const apiUrl = 'https://bottle-tracker-go-api-production.up.railway.app/users/register'
+const apiUrl = 'https://bottle-tracker-go-api-production.up.railway.app/users/login'
 
-export const register = async (values: Values) => {
+export const login = async (values: Values) => {
 	const response = await fetch(apiUrl, {
 		method: 'POST',
 		headers: {
@@ -13,10 +13,10 @@ export const register = async (values: Values) => {
 			password: values.password,
 		}),
 	})
-	if (response.status === 409) {
-		throw new Error('Name already exists')
+	if (response.status === 401) {
+		throw new Error('Unauthorized')
 	}
 	if (!response.ok) {
-		throw new Error('Failed to register')
+		throw new Error('Failed to login')
 	}
 }
