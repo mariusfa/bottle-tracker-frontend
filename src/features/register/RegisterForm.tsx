@@ -19,6 +19,7 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 	const generalError = useSignal(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const isSuccess = useSignal(false);
+	const isSubmitting = useSignal(false);
 
 	const validateForm = (values: Values) => {
 		const errors = { name: "", password: "", passwordConfirmation: "" };
@@ -53,7 +54,9 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 			return;
 		}
 
+		isSubmitting.value = true;
 		const error = await handleSubmit(formValues.value);
+		isSubmitting.value = false;
 		if (error.conflict) {
 			formErrors.value = { ...formErrors.value, name: "Name already exists" };
 			return
@@ -95,7 +98,7 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 				<Label label="Password confirmation" forInput="passwordConfirmation" />
 				<InputText placeholder="Password confirmation" name="passwordConfirmation" value={formValues.value.passwordConfirmation} type="password" onChange={handleOnChange} />
 				{formErrors.value.passwordConfirmation && <p class="text-red-500 text-xs italic">{formErrors.value.passwordConfirmation}</p>}
-				<PrimaryButton label="Submit" type="submit" />
+				<PrimaryButton label="Submit" type="submit" isSubmitting={isSubmitting.value} />
 			</form>
 		</RoundedBoxContainer>
 	);
