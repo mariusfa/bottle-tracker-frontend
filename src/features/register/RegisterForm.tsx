@@ -7,6 +7,7 @@ import { Label } from "../../components/Label";
 import { InputText } from "../../components/InputText";
 import { useEffect, useRef } from "preact/hooks";
 import { PrimaryButton } from "../../components/PrimaryButton";
+import { LinkText } from "../../components/LinkText";
 
 interface Props {
 	handleSubmit: (values: Values) => Promise<{ error: boolean, conflict: boolean }>;
@@ -17,6 +18,7 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 	const formErrors = useSignal({ name: "", password: "", passwordConfirmation: "" });
 	const generalError = useSignal(false);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const isSuccess = useSignal(false);
 
 	const validateForm = (values: Values) => {
 		const errors = { name: "", password: "", passwordConfirmation: "" };
@@ -54,10 +56,13 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 		const error = await handleSubmit(formValues.value);
 		if (error.conflict) {
 			formErrors.value = { ...formErrors.value, name: "Name already exists" };
+			return
 		}
 		if (error.error) {
 			generalError.value = true;
+			return
 		}
+		isSuccess.value = true;
 	}
 
 	useEffect(() => {
@@ -65,6 +70,16 @@ export const RegisterForm: FunctionalComponent<Props> = ({ handleSubmit }) => {
 			inputRef.current.focus();
 		}
 	}, [])
+
+	if (isSuccess.value) {
+		return (
+			<RoundedBoxContainer md={true}>
+				<Heading1 title="Register" />
+				<p class="text-green-600 text-xs italic">Successfully registered.</p>
+				<LinkText href="/login">Click here to login</LinkText>
+			</RoundedBoxContainer>
+		);
+	}
 
 	return (
 		<RoundedBoxContainer md={true}>
