@@ -1,25 +1,31 @@
-import { LocationProvider, Route, Router } from "preact-iso"
-import { Wines } from "./features/wines/Wines"
-import { AddWine } from "./features/wines/add/AddWine"
-import { WineById } from "./features/wines/by-id/WineById"
-import { Header } from "./features/header/Header"
-import { Register } from "./features/register/Register"
-import { Login } from "./features/login/Login"
+import { useState } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
 
-export const App = () => {
-	return (
-		<div class="mx-auto max-w-screen-md p-4">
-			<LocationProvider>
-				<Header />
-				<Router>
-					<Route path="/" component={Wines} />
-					<Route path="/new" component={AddWine} />
-					<Route path="/register" component={Register} />
-					<Route path="/login" component={Login} />
-					<Route path="/:id" component={WineById} />
-					<Route default component={Wines} />
-				</Router>
-			</LocationProvider>
-		</div>
-	)
+function App() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <>
+            <div>
+                <a href="https://vite.dev" target="_blank">
+                    <img src={viteLogo} className="logo" alt="Vite logo" />
+                </a>
+                <a href="https://react.dev" target="_blank">
+                    <img src={reactLogo} className="logo react" alt="React logo" />
+                </a>
+            </div>
+            <h1>Vite + React</h1>
+            <div className="card">
+                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+                <p>
+                    Edit <code>src/App.tsx</code> and save to test HMR
+                </p>
+            </div>
+            <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+        </>
+    );
 }
+
+export default App;
