@@ -1,69 +1,29 @@
-# React + TypeScript + Vite
+# Bottle Tracker Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dette er en frontend-app for å holde oversikt over vinflasker i ett eller flere vinskap. Appen kommuniserer med [bottle-tracker-go-api](https://github.com/mariusfa/bottle-tracker-go-api).
 
-Currently, two official plugins are available:
+## Funksjonalitet
+- Registrer vinflasker manuelt eller ved å scanne strekkode
+- Sett inn flasker i et vinskap
+- Fjern flasker fra vinskap
+- Se oversikt over alle flasker og vinskap
+- Web-app for enkel tilgang fra alle enheter
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Teknologi
+- **React** og **TypeScript**
+- **Tanstack Query** og **Tanstack Route** (mulig også Tanstack Form)
+- **Testing:** Vitest, React Testing Library med user-events
+- **Tailwind CSS v4** for styling
 
-## Expanding the ESLint configuration
+## Komme i gang
+1. Installer avhengigheter:
+	```bash
+	npm install
+	```
+2. Start utviklingsserver:
+	```bash
+	npm run dev
+	```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## API
+Denne appen bruker [bottle-tracker-go-api](https://github.com/mariusfa/bottle-tracker-go-api) som backend.
