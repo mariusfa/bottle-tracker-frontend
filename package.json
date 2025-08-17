@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "types": "tsc -b --noEmit",
-        "build": "vite build",
+        "build": "vite build && npm prune --omit=dev",
         "lint": "eslint .",
         "preview": "vite preview"
     },
