@@ -76,6 +76,14 @@ The AI agent supports a `commit` command to automate the commit workflow:
 2. If changes exist and you are on the `main` branch, use git status to check branch name, the agent will prompt to create a feature branch and its name. When asking for name, come up with a suggestion based on changes
 3. The agent will run linting (`npm run lint`), and testing (`npm run test` or as needed) before staging changes.
 4. All changes are staged (`git add .`).
-5. The agent will prompt for confirmation and the desired commit message.
+5. The agent will prompt for confirmation and the desired commit message. Come up with a suggestion for commit message
 6. The commit is created (`git commit`).
 7. The agent will push the branch to the remote (`git push`).
+
+#### `merge` Command Workflow
+
+The AI agent supports a `merge` command to automate the merge workflow:
+
+1. Check if on feature branch. Else do nothing. Aka on main branch do nothing.
+2. Checkout main and pull.
+3. Merge with rebase instead of git merge
