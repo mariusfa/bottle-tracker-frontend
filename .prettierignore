@@ -1,0 +1,12 @@
+# Generated files
+src/routeTree.gen.ts
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
