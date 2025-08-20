@@ -1,19 +1,23 @@
 ---
 applyTo: '**'
 ---
+
 ## Copilot Instructions for Bottle Tracker Frontend
 
 ### Project Overview
+
 - React/TypeScript web app for tracking wine bottles in fridges. Integrates with [bottle-tracker-go-api](https://github.com/mariusfa/bottle-tracker-go-api).
 - Tech: Vite, React 19, Tanstack Query/Route, Tailwind CSS v4, TypeScript, Vitest, React Testing Library.
 
 ### Architecture
+
 - Entrypoint: `src/main.tsx` mounts `App` using React 19's root API.
 - Main UI logic in `src/App.tsx`. Place new components in `src/`.
 - Styling: Tailwind CSS v4. Global styles in `src/index.css`, component styles in `src/App.css`.
 - Static assets: `src/assets/`, public assets: `public/`.
 
 ### Developer Workflows
+
 - Install: `npm install`
 - Dev server: `npm run dev` (Vite, hot reload)
 - Build: `npm run build`
@@ -23,6 +27,7 @@ applyTo: '**'
 - Testing: (Vitest/React Testing Library expected, add tests in `src/`)
 
 ### Conventions & Patterns
+
 - TypeScript: Strict mode, unused locals/params flagged, JSX uses `react-jsx`.
 - ESLint: Configured via `eslint.config.js` with recommended rules and Vite/React plugins.
 - Components: Use functional components and hooks. Place in `src/`.
@@ -30,17 +35,16 @@ applyTo: '**'
 - Routing/Data: Tanstack Query/Route for data and navigation (see README).
 
 ### Code Style
+
 - Prefer TypeScript arrow functions for all functions and methods.
 - Define React components using `React.FC<Props>` for type safety and clarity.
 - Example:
-	```tsx
-	const MyComponent: React.FC<{ name: string }> = ({ name }) => (
-		<div>Hello, {name}</div>
-	);
-	```
+
+    ```tsx
+    const MyComponent: React.FC<{ name: string }> = ({ name }) => <div>Hello, {name}</div>;
+    ```
 
 - Do not use `export default` in any files; always use named exports.
-
 
 ### Testing
 
@@ -49,19 +53,22 @@ Wrap as much data logic and other business logic in custom hooks to facilitate m
 
 For keyboard interactions in tests, prefer using the `@testing-library/user-event` package for more realistic user simulation.
 
-
 ### Integration Points
+
 - Backend: All data flows through bottle-tracker-go-api. Update API URLs/configs centrally.
 - Static files: `public/` for public assets, `src/assets/` for React assets.
 
 ### Examples
+
 - Entrypoint: See `src/main.tsx` for app mounting.
 - Component: See `src/App.tsx` for functional component with state.
 
 ### Docker
+
 - Multi-stage Dockerfile builds with Node 22 Alpine, serves static files using `serve` on port 80.
 
 ### Additional Notes
+
 - Vite config: See `vite.config.ts` for plugin/server options.
 - TypeScript config: See `tsconfig.app.json` for strictness/module resolution.
 - ESLint config: See `eslint.config.js` for linting rules.
