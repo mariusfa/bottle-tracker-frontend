@@ -68,6 +68,42 @@ export { MyComponent };
 - Extract business logic into custom hooks for easier testing and mocking
 - Use `@testing-library/user-event` for keyboard interactions in tests
 
+## Development Workflow
+
+### Component Development Process
+
+Follow this iterative approach for creating new components:
+
+**Step 1: View with dummy hook**
+- Create the component view with a dummy custom hook that returns realistic test data
+- Define types/interfaces based on how the component will use the data
+- Include loading and error states in the dummy hook
+- Write tests for the component (mocking the hook if needed)
+- Commit and push as "complete" task
+
+**Step 2: Hook implementation**
+- Replace dummy hook with actual implementation (API calls, state management, etc.)
+- Maintain the same interface established in step 1
+- Write tests for the custom hook covering edge cases
+- Commit and push as separate task
+
+**Benefits:**
+- Components use proper patterns from day 1
+- Types/interfaces evolve naturally based on actual usage
+- Tests remain stable when switching from dummy to real implementation
+- Small, focused commits make changes easier to track and review
+
+Example dummy hook structure:
+```tsx
+const useBottleData = () => {
+  return {
+    bottles: [/* realistic test data */],
+    loading: false,
+    error: null
+  };
+};
+```
+
 ## Docker Deployment
 
 Multi-stage build using Node 22 Alpine:
