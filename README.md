@@ -31,3 +31,5 @@ Dette er en frontend-app for å holde oversikt over vinflasker i ett eller flere
 ## API
 
 Denne appen bruker [bottle-tracker-go-api](https://github.com/mariusfa/bottle-tracker-go-api) som backend.
+
+vinmonopolet barcode api: https://www.vinmonopolet.no/vmpws/v2/vmp/products/barCodeSearch/3770010202226
