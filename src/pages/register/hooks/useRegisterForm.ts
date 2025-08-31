@@ -1,4 +1,11 @@
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { registerUser } from '../../../services/userApi';
+
+interface RegisterUserRequest {
+    name: string;
+    password: string;
+}
 
 export interface RegisterFormData {
     name: string;
@@ -28,7 +35,21 @@ const useRegisterForm = (): UseRegisterFormReturn => {
         confirmPassword: ''
     });
     const [errors, setErrors] = useState<RegisterFormErrors>({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const registerMutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: () => {
+            alert('Registration successful!');
+            // TODO: Redirect to login or dashboard
+        },
+        onError: (error: Error) => {
+            if (error.message === 'User already exists') {
+                setErrors({ name: 'A user with this name already exists' });
+            } else {
+                alert(`Registration failed: ${error.message}`);
+            }
+        },
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -75,29 +96,18 @@ const useRegisterForm = (): UseRegisterFormReturn => {
             return;
         }
 
-        setIsSubmitting(true);
-        
-        try {
-            // TODO: Send registration request to API
-            console.log('Registration data:', {
-                name: formData.name.trim(),
-                password: formData.password
-            });
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            alert('Registration successful! (Mock response)');
-        } catch (error) {
-            console.error('Registration error:', error);
-        } finally {
-            setIsSubmitting(false);
-        }
+        const userData: RegisterUserRequest = {
+            name: formData.name.trim(),
+            password: formData.password
+        };
+
+        registerMutation.mutate(userData);
     };
 
     return {
         formData,
         errors,
-        isSubmitting,
+        isSubmitting: registerMutation.isPending,
         handleInputChange,
         handleSubmit,
         validateForm
