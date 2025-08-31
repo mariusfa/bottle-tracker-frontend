@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRegisterForm } from '../../hooks/useRegisterForm';
+import { useRegisterForm } from './hooks/useRegisterForm';
 
 const RegisterPage: React.FC = () => {
     const {

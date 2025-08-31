@@ -4,11 +4,11 @@ import userEvent from '@testing-library/user-event';
 import { RegisterPage } from './RegisterPage';
 
 // Mock the useRegisterForm hook for isolated component testing
-vi.mock('../../hooks/useRegisterForm', () => ({
+vi.mock('./hooks/useRegisterForm', () => ({
     useRegisterForm: vi.fn()
 }));
 
-import { useRegisterForm } from '../../hooks/useRegisterForm';
+import { useRegisterForm } from './hooks/useRegisterForm';
 
 const mockUseRegisterForm = vi.mocked(useRegisterForm);
 
