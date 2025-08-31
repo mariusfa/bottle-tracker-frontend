@@ -1,19 +1,42 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 import { useLoginForm } from './useLoginForm';
+import * as userApi from '../../../services/userApi';
 
-// Mock console.log and alert for testing
-const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+// Mock the userApi
+vi.mock('../../../services/userApi', () => ({
+    loginUser: vi.fn(),
+}));
+
+const mockLoginUser = vi.mocked(userApi.loginUser);
 const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+// Create a wrapper with QueryClient for testing
+const createWrapper = () => {
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: { retry: false },
+            mutations: { retry: false },
+        },
+    });
+    
+    return ({ children }: { children: React.ReactNode }) =>
+        React.createElement(QueryClientProvider, { client: queryClient }, children);
+};
 
 describe('useLoginForm', () => {
     beforeEach(() => {
-        mockConsoleLog.mockClear();
+        mockLoginUser.mockClear();
         mockAlert.mockClear();
+        vi.clearAllMocks();
     });
 
     it('initializes with empty form data and no errors', () => {
-        const { result } = renderHook(() => useLoginForm());
+        const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
         expect(result.current.formData).toEqual({
             name: '',
@@ -24,7 +47,9 @@ describe('useLoginForm', () => {
     });
 
     it('updates form data on input change', () => {
-        const { result } = renderHook(() => useLoginForm());
+        const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
         act(() => {
             const mockEvent = {
@@ -37,7 +62,9 @@ describe('useLoginForm', () => {
     });
 
     it('clears errors when user starts typing in a field with errors', () => {
-        const { result } = renderHook(() => useLoginForm());
+        const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
         // First, create an error by validating empty form
         act(() => {
@@ -59,7 +86,9 @@ describe('useLoginForm', () => {
 
     describe('validateForm', () => {
         it('validates required name field', () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
             let isValid: boolean = false;
             act(() => {
@@ -71,7 +100,9 @@ describe('useLoginForm', () => {
         });
 
         it('trims whitespace from name validation', () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
             act(() => {
                 const mockEvent = {
@@ -90,7 +121,9 @@ describe('useLoginForm', () => {
         });
 
         it('validates required password field', () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
             let isValid: boolean = false;
             act(() => {
@@ -102,7 +135,9 @@ describe('useLoginForm', () => {
         });
 
         it('returns true when all validation passes', () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
 
             act(() => {
                 result.current.handleInputChange({
@@ -125,7 +160,9 @@ describe('useLoginForm', () => {
 
     describe('handleSubmit', () => {
         it('prevents default and does not submit if validation fails', async () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
             const mockPreventDefault = vi.fn();
 
             await act(async () => {
@@ -137,11 +174,16 @@ describe('useLoginForm', () => {
 
             expect(mockPreventDefault).toHaveBeenCalled();
             expect(result.current.isSubmitting).toBe(false);
-            expect(mockConsoleLog).not.toHaveBeenCalled();
+            expect(mockLoginUser).not.toHaveBeenCalled();
         });
 
         it('submits form with valid data', async () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
+
+            const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+            mockLoginUser.mockResolvedValue({ token: mockToken });
 
             // Set up valid form data
             act(() => {
@@ -163,15 +205,44 @@ describe('useLoginForm', () => {
             });
 
             expect(mockPreventDefault).toHaveBeenCalled();
-            expect(mockConsoleLog).toHaveBeenCalledWith('Login data:', {
+            expect(mockLoginUser).toHaveBeenCalledWith({
                 name: 'John Doe', // Should be trimmed
                 password: 'password123',
             });
-            expect(mockAlert).toHaveBeenCalledWith('Login successful! (Mock response)');
+            expect(mockAlert).toHaveBeenCalledWith('Login successful! You are now logged in.');
+        });
+
+        it('handles login failure with invalid credentials', async () => {
+            const { result } = renderHook(() => useLoginForm(), {
+                wrapper: createWrapper(),
+            });
+
+            mockLoginUser.mockRejectedValue(new Error('Login failed: Internal Server Error'));
+
+            // Set up valid form data
+            act(() => {
+                result.current.handleInputChange({
+                    target: { name: 'name', value: 'John Doe' },
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'password', value: 'wrongpassword' },
+                } as React.ChangeEvent<HTMLInputElement>);
+            });
+
+            await act(async () => {
+                const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+                await result.current.handleSubmit(mockEvent);
+            });
+
+            expect(result.current.errors.password).toBe('Invalid username or password');
         });
 
         it('sets and resets isSubmitting state during submission', async () => {
-            const { result } = renderHook(() => useLoginForm());
+            const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
+
+            mockLoginUser.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({ token: 'test-token' }), 100)));
 
             // Set up valid form data
             act(() => {
@@ -186,15 +257,20 @@ describe('useLoginForm', () => {
             // Initially should not be submitting
             expect(result.current.isSubmitting).toBe(false);
 
-            // Submit the form
+            // Start the submission
             const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-
-            await act(async () => {
-                await result.current.handleSubmit(mockEvent);
+            
+            act(() => {
+                result.current.handleSubmit(mockEvent);
             });
 
-            // After completion, should not be submitting
-            expect(result.current.isSubmitting).toBe(false);
+            // Should be submitting now
+            expect(result.current.isSubmitting).toBe(true);
+
+            // Wait for mutation to complete
+            await act(async () => {
+                await vi.waitFor(() => expect(result.current.isSubmitting).toBe(false));
+            });
         });
     });
 });

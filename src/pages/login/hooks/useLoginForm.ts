@@ -1,4 +1,12 @@
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { loginUser } from '../../../services/userApi';
+import { authService } from '../../../services/authService';
+
+interface LoginUserRequest {
+    name: string;
+    password: string;
+}
 
 export interface LoginFormData {
     name: string;
@@ -25,7 +33,22 @@ const useLoginForm = (): UseLoginFormReturn => {
         password: ''
     });
     const [errors, setErrors] = useState<LoginFormErrors>({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const loginMutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (response) => {
+            authService.setToken(response.token);
+            alert('Login successful! You are now logged in.');
+            // TODO: Redirect to dashboard using React Router
+        },
+        onError: (error: Error) => {
+            if (error.message.includes('500') || error.message.includes('failed')) {
+                setErrors({ password: 'Invalid username or password' });
+            } else {
+                alert(`Login failed: ${error.message}`);
+            }
+        },
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -61,29 +84,18 @@ const useLoginForm = (): UseLoginFormReturn => {
             return;
         }
 
-        setIsSubmitting(true);
-        
-        try {
-            // TODO: Send login request to API
-            console.log('Login data:', {
-                name: formData.name.trim(),
-                password: formData.password
-            });
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            alert('Login successful! (Mock response)');
-        } catch (error) {
-            console.error('Login error:', error);
-        } finally {
-            setIsSubmitting(false);
-        }
+        const userData: LoginUserRequest = {
+            name: formData.name.trim(),
+            password: formData.password
+        };
+
+        loginMutation.mutate(userData);
     };
 
     return {
         formData,
         errors,
-        isSubmitting,
+        isSubmitting: loginMutation.isPending,
         handleInputChange,
         handleSubmit,
         validateForm
