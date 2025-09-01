@@ -47,3 +47,16 @@ export const loginUser = async (userData: LoginUserRequest): Promise<LoginUserRe
 
     return response.json();
 };
+
+export const validateUser = async (token: string): Promise<void> => {
+    const response = await fetch(buildApiUrl('/users/validate'), {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Token validation failed: ${response.statusText}`);
+    }
+};

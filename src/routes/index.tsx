@@ -1,36 +1,24 @@
 import React from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { Card } from '../components/card/Card';
-import { PageHeader } from '../components/page-header/PageHeader';
-import { PageLayout } from '../components/page-layout/PageLayout';
-import { Button } from '../components/button/Button';
+import { createFileRoute } from '@tanstack/react-router';
+import { useAuth } from '../hooks/useAuth';
+import { WelcomePage } from '../pages/welcome/WelcomePage';
+import { HomePage } from '../pages/home/HomePage';
 
 const IndexPage: React.FC = () => {
-    return (
-        <PageLayout maxWidth="lg">
-            <Card>
-                <PageHeader
-                    title="Welcome to Bottle Tracker"
-                    subtitle="Your personal wine collection manager"
-                />
+    const { isAuthenticated, isLoading } = useAuth();
 
-                <div className="text-center space-y-6">
-                    <p className="text-gray-600 text-lg">
-                        Get started by creating an account or signing in to manage your wine collection.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/register">
-                            <Button>Create Account</Button>
-                        </Link>
-                        <Link to="/login">
-                            <Button variant="secondary">Sign In</Button>
-                        </Link>
-                    </div>
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading...</p>
                 </div>
-            </Card>
-        </PageLayout>
-    );
+            </div>
+        );
+    }
+
+    return isAuthenticated ? <HomePage /> : <WelcomePage />;
 };
 
 export const Route = createFileRoute('/')({
