@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@tanstack/react-router';
 import { useRegisterForm } from './hooks/useRegisterForm';
 import { FormField } from '../../components/form-field/FormField';
 import { Button } from '../../components/button/Button';
@@ -33,17 +34,18 @@ const RegisterPage: React.FC = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href={`/login?username=${encodeURIComponent(registeredUsername || '')}`} className="flex-1 sm:flex-initial">
+                            <Link 
+                                to="/login" 
+                                search={{ username: registeredUsername || undefined }}
+                                className="flex-1 sm:flex-initial"
+                            >
                                 <Button>Sign In Now</Button>
-                            </a>
-                            <div className="flex-1 sm:flex-initial">
-                                <Button 
-                                    variant="secondary"
-                                    onClick={() => window.location.href = '/'}
-                                >
+                            </Link>
+                            <Link to="/" className="flex-1 sm:flex-initial">
+                                <Button variant="secondary">
                                     Back to Home
                                 </Button>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </Card>

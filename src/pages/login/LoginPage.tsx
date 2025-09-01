@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearch } from '@tanstack/react-router';
 import { useLoginForm } from './hooks/useLoginForm';
 import { FormField } from '../../components/form-field/FormField';
 import { Button } from '../../components/button/Button';
@@ -7,8 +8,8 @@ import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
 
 const LoginPage: React.FC = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialUsername = urlParams.get('username') || '';
+    const search = useSearch({ from: '/login' });
+    const initialUsername = search.username || '';
     
     const {
         formData,
