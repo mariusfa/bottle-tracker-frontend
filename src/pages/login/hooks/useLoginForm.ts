@@ -27,9 +27,13 @@ export interface UseLoginFormReturn {
     validateForm: () => boolean;
 }
 
-const useLoginForm = (): UseLoginFormReturn => {
+interface UseLoginFormProps {
+    initialUsername?: string;
+}
+
+const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLoginFormReturn => {
     const [formData, setFormData] = useState<LoginFormData>({
-        name: '',
+        name: initialUsername,
         password: ''
     });
     const [errors, setErrors] = useState<LoginFormErrors>({});

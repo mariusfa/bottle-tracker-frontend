@@ -7,13 +7,16 @@ import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
 
 const LoginPage: React.FC = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialUsername = urlParams.get('username') || '';
+    
     const {
         formData,
         errors,
         isSubmitting,
         handleInputChange,
         handleSubmit
-    } = useLoginForm();
+    } = useLoginForm({ initialUsername });
 
     return (
         <PageLayout>

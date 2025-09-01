@@ -33,7 +33,7 @@ const RegisterPage: React.FC = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="/login" className="flex-1 sm:flex-initial">
+                            <a href={`/login?username=${encodeURIComponent(registeredUsername || '')}`} className="flex-1 sm:flex-initial">
                                 <Button>Sign In Now</Button>
                             </a>
                             <div className="flex-1 sm:flex-initial">
