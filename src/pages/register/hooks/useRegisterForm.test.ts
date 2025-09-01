@@ -307,7 +307,8 @@ describe('useRegisterForm', () => {
                 name: 'John Doe', // Should be trimmed
                 password: 'password123',
             });
-            expect(mockAlert).toHaveBeenCalledWith('Registration successful!');
+            expect(result.current.isSuccess).toBe(true);
+            expect(result.current.registeredUsername).toBe('John Doe');
         });
 
         it('handles user already exists error', async () => {
@@ -375,6 +376,58 @@ describe('useRegisterForm', () => {
             await act(async () => {
                 await vi.waitFor(() => expect(result.current.isSubmitting).toBe(false));
             });
+        });
+    });
+
+    describe('resetForm', () => {
+        it('resets all form state to initial values', async () => {
+            const { result } = renderHook(() => useRegisterForm(), {
+                wrapper: createWrapper(),
+            });
+
+            // Set some form data and success state
+            act(() => {
+                result.current.handleInputChange({
+                    target: { name: 'name', value: 'John Doe' }
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'password', value: 'password123' }
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'confirmPassword', value: 'password123' }
+                } as React.ChangeEvent<HTMLInputElement>);
+            });
+
+            // Mock successful registration
+            mockRegisterUser.mockResolvedValue({ token: 'fake-token' });
+            
+            await act(async () => {
+                const mockEvent = {
+                    preventDefault: vi.fn(),
+                } as unknown as React.FormEvent;
+                await result.current.handleSubmit(mockEvent);
+            });
+
+            // Wait for mutation to complete and success state to update
+            await act(async () => {
+                await vi.waitFor(() => expect(result.current.isSuccess).toBe(true));
+            });
+            
+            expect(result.current.registeredUsername).toBe('John Doe');
+
+            // Reset form
+            act(() => {
+                result.current.resetForm();
+            });
+
+            expect(result.current.formData).toEqual({
+                name: '',
+                password: '',
+                confirmPassword: ''
+            });
+            expect(result.current.errors).toEqual({});
+            expect(result.current.isSuccess).toBe(false);
+            expect(result.current.registeredUsername).toBe(null);
         });
     });
 });

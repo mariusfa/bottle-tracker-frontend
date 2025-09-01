@@ -3,6 +3,13 @@ import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { RegisterPage } from './RegisterPage';
 
+// Mock TanStack Router Link component
+vi.mock('@tanstack/react-router', () => ({
+    Link: ({ to, search, children }: { to: string; search?: any; children: React.ReactNode }) => (
+        <a href={search?.username ? `${to}?username=${search.username}` : to}>{children}</a>
+    ),
+}));
+
 // Mock the useRegisterForm hook for isolated component testing
 vi.mock('./hooks/useRegisterForm', () => ({
     useRegisterForm: vi.fn()
@@ -185,6 +192,18 @@ describe('RegisterPage', () => {
         renderRegisterPage(hookReturn);
 
         const signInLink = screen.getByRole('link', { name: /sign in now/i });
-        expect(signInLink).toHaveAttribute('href', '/login');
+        expect(signInLink).toHaveAttribute('href', '/login?username=John Doe');
+    });
+
+    it('renders back to home link with correct href in success view', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            isSuccess: true,
+            registeredUsername: 'John Doe'
+        };
+        renderRegisterPage(hookReturn);
+
+        const homeLink = screen.getByRole('link', { name: /back to home/i });
+        expect(homeLink).toHaveAttribute('href', '/');
     });
 });

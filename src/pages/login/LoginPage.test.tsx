@@ -3,17 +3,25 @@ import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { LoginPage } from './LoginPage';
 
+// Mock TanStack Router hooks
+vi.mock('@tanstack/react-router', () => ({
+    useSearch: vi.fn()
+}));
+
 // Mock the useLoginForm hook for isolated component testing
 vi.mock('./hooks/useLoginForm', () => ({
     useLoginForm: vi.fn()
 }));
 
+import { useSearch } from '@tanstack/react-router';
 import { useLoginForm } from './hooks/useLoginForm';
 
 const mockUseLoginForm = vi.mocked(useLoginForm);
+const mockUseSearch = vi.mocked(useSearch);
 
-const renderLoginPage = (hookReturnValue: ReturnType<typeof useLoginForm>) => {
+const renderLoginPage = (hookReturnValue: ReturnType<typeof useLoginForm>, searchParams = {}) => {
     mockUseLoginForm.mockReturnValue(hookReturnValue);
+    mockUseSearch.mockReturnValue(searchParams);
     return render(<LoginPage />);
 };
 
@@ -127,5 +135,19 @@ describe('LoginPage', () => {
         const nameInput = screen.getByLabelText(/name/i);
         expect(nameInput).toHaveClass('border-gray-300');
         expect(nameInput).not.toHaveClass('border-red-500');
+    });
+
+    it('passes username from search params to useLoginForm hook', () => {
+        const searchParams = { username: 'TestUser' };
+        renderLoginPage(defaultHookReturn, searchParams);
+
+        expect(mockUseLoginForm).toHaveBeenCalledWith({ initialUsername: 'TestUser' });
+    });
+
+    it('handles empty username from search params', () => {
+        const searchParams = {};
+        renderLoginPage(defaultHookReturn, searchParams);
+
+        expect(mockUseLoginForm).toHaveBeenCalledWith({ initialUsername: '' });
     });
 });
