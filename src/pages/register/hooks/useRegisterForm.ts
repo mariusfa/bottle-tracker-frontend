@@ -23,9 +23,12 @@ export interface UseRegisterFormReturn {
     formData: RegisterFormData;
     errors: RegisterFormErrors;
     isSubmitting: boolean;
+    isSuccess: boolean;
+    registeredUsername: string | null;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: React.FormEvent) => Promise<void>;
     validateForm: () => boolean;
+    resetForm: () => void;
 }
 
 const useRegisterForm = (): UseRegisterFormReturn => {
@@ -35,12 +38,14 @@ const useRegisterForm = (): UseRegisterFormReturn => {
         confirmPassword: ''
     });
     const [errors, setErrors] = useState<RegisterFormErrors>({});
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [registeredUsername, setRegisteredUsername] = useState<string | null>(null);
 
     const registerMutation = useMutation({
         mutationFn: registerUser,
         onSuccess: () => {
-            alert('Registration successful!');
-            // TODO: Redirect to login or dashboard
+            setRegisteredUsername(formData.name.trim());
+            setIsSuccess(true);
         },
         onError: (error: Error) => {
             if (error.message === 'User already exists') {
@@ -104,13 +109,23 @@ const useRegisterForm = (): UseRegisterFormReturn => {
         registerMutation.mutate(userData);
     };
 
+    const resetForm = () => {
+        setFormData({ name: '', password: '', confirmPassword: '' });
+        setErrors({});
+        setIsSuccess(false);
+        setRegisteredUsername(null);
+    };
+
     return {
         formData,
         errors,
         isSubmitting: registerMutation.isPending,
+        isSuccess,
+        registeredUsername,
         handleInputChange,
         handleSubmit,
-        validateForm
+        validateForm,
+        resetForm
     };
 };
 

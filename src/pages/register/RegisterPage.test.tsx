@@ -22,9 +22,12 @@ describe('RegisterPage', () => {
         formData: { name: '', password: '', confirmPassword: '' },
         errors: {},
         isSubmitting: false,
+        isSuccess: false,
+        registeredUsername: null,
         handleInputChange: vi.fn(),
         handleSubmit: vi.fn(),
-        validateForm: vi.fn()
+        validateForm: vi.fn(),
+        resetForm: vi.fn()
     };
 
     it('renders registration form with all fields', () => {
@@ -131,5 +134,57 @@ describe('RegisterPage', () => {
         const nameInput = screen.getByLabelText(/name/i);
         expect(nameInput).toHaveClass('border-gray-300');
         expect(nameInput).not.toHaveClass('border-red-500');
+    });
+
+    it('renders success view when isSuccess is true', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            isSuccess: true,
+            registeredUsername: 'John Doe'
+        };
+        renderRegisterPage(hookReturn);
+
+        expect(screen.getByRole('heading', { name: /account created successfully!/i })).toBeInTheDocument();
+        expect(screen.getByText(/welcome to bottle tracker, john doe!/i)).toBeInTheDocument();
+        expect(screen.getByText(/your account has been created successfully/i)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /sign in now/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /back to home/i })).toBeInTheDocument();
+    });
+
+    it('does not render registration form when in success state', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            isSuccess: true,
+            registeredUsername: 'John Doe'
+        };
+        renderRegisterPage(hookReturn);
+
+        expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/^password$/i)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/confirm password/i)).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /create account/i })).not.toBeInTheDocument();
+    });
+
+    it('shows success view with correct username', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            isSuccess: true,
+            registeredUsername: 'Alice Smith'
+        };
+        renderRegisterPage(hookReturn);
+
+        expect(screen.getByText(/welcome to bottle tracker, alice smith!/i)).toBeInTheDocument();
+    });
+
+    it('renders sign in link with correct href in success view', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            isSuccess: true,
+            registeredUsername: 'John Doe'
+        };
+        renderRegisterPage(hookReturn);
+
+        const signInLink = screen.getByRole('link', { name: /sign in now/i });
+        expect(signInLink).toHaveAttribute('href', '/login');
     });
 });

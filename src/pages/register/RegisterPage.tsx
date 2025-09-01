@@ -11,9 +11,45 @@ const RegisterPage: React.FC = () => {
         formData,
         errors,
         isSubmitting,
+        isSuccess,
+        registeredUsername,
         handleInputChange,
         handleSubmit
     } = useRegisterForm();
+
+    if (isSuccess) {
+        return (
+            <PageLayout>
+                <Card>
+                    <PageHeader
+                        title="Account Created Successfully!"
+                        subtitle={`Welcome to Bottle Tracker, ${registeredUsername}!`}
+                    />
+
+                    <div className="text-center space-y-6">
+                        <div className="text-green-600 text-6xl mb-4">✓</div>
+                        <p className="text-gray-600 text-lg">
+                            Your account has been created successfully. You can now sign in to start managing your wine collection.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="/login" className="flex-1 sm:flex-initial">
+                                <Button>Sign In Now</Button>
+                            </a>
+                            <div className="flex-1 sm:flex-initial">
+                                <Button 
+                                    variant="secondary"
+                                    onClick={() => window.location.href = '/'}
+                                >
+                                    Back to Home
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            </PageLayout>
+        );
+    }
 
     return (
         <PageLayout>
