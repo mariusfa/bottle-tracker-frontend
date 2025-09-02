@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WinesSearchRouteImport } from './routes/wines/search'
+import { Route as WinesAddRouteImport } from './routes/wines/add'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -28,35 +30,53 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WinesSearchRoute = WinesSearchRouteImport.update({
+  id: '/wines/search',
+  path: '/wines/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WinesAddRoute = WinesAddRouteImport.update({
+  id: '/wines/add',
+  path: '/wines/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/wines/add': typeof WinesAddRoute
+  '/wines/search': typeof WinesSearchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/wines/add': typeof WinesAddRoute
+  '/wines/search': typeof WinesSearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/wines/add': typeof WinesAddRoute
+  '/wines/search': typeof WinesSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register'
+  fullPaths: '/' | '/login' | '/register' | '/wines/add' | '/wines/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register'
-  id: '__root__' | '/' | '/login' | '/register'
+  to: '/' | '/login' | '/register' | '/wines/add' | '/wines/search'
+  id: '__root__' | '/' | '/login' | '/register' | '/wines/add' | '/wines/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  WinesAddRoute: typeof WinesAddRoute
+  WinesSearchRoute: typeof WinesSearchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +102,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wines/search': {
+      id: '/wines/search'
+      path: '/wines/search'
+      fullPath: '/wines/search'
+      preLoaderRoute: typeof WinesSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wines/add': {
+      id: '/wines/add'
+      path: '/wines/add'
+      fullPath: '/wines/add'
+      preLoaderRoute: typeof WinesAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +123,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  WinesAddRoute: WinesAddRoute,
+  WinesSearchRoute: WinesSearchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,13 +2,15 @@ import React from 'react';
 
 export interface FormFieldProps {
     label: string;
-    type: 'text' | 'password' | 'email';
+    type: 'text' | 'password' | 'email' | 'number';
     name: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     error?: string;
     id?: string;
+    required?: boolean;
+    readOnly?: boolean;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -19,7 +21,9 @@ const FormField: React.FC<FormFieldProps> = ({
     onChange,
     placeholder,
     error,
-    id
+    id,
+    required = false,
+    readOnly = false
 }) => {
     const fieldId = id || name;
 
@@ -36,8 +40,10 @@ const FormField: React.FC<FormFieldProps> = ({
                 onChange={onChange}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                     error ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } ${readOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                 placeholder={placeholder}
+                required={required}
+                readOnly={readOnly}
             />
             {error && (
                 <p className="mt-1 text-sm text-red-600">{error}</p>

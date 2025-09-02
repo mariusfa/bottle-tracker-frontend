@@ -398,8 +398,8 @@ describe('useRegisterForm', () => {
                 } as React.ChangeEvent<HTMLInputElement>);
             });
 
-            // Mock successful registration
-            mockRegisterUser.mockResolvedValue({ token: 'fake-token' });
+            // Mock successful registration (API returns void, not token)
+            mockRegisterUser.mockResolvedValue(undefined);
             
             await act(async () => {
                 const mockEvent = {

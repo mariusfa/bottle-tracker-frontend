@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@tanstack/react-router';
 import { Card } from '../../components/card/Card';
 import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
@@ -32,7 +33,9 @@ const HomePage: React.FC = () => {
                         <Card>
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Actions</h3>
                             <div className="space-y-2">
-                                <Button>Add Bottle</Button>
+                                <Link to="/wines/search">
+                                    <Button>Search Wine</Button>
+                                </Link>
                                 <Button variant="secondary">View Collection</Button>
                             </div>
                         </Card>
