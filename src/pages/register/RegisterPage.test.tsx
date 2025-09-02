@@ -5,7 +5,7 @@ import { RegisterPage } from './RegisterPage';
 
 // Mock TanStack Router Link component
 vi.mock('@tanstack/react-router', () => ({
-    Link: ({ to, search, children }: { to: string; search?: any; children: React.ReactNode }) => (
+    Link: ({ to, search, children }: { to: string; search?: { username?: string }; children: React.ReactNode }) => (
         <a href={search?.username ? `${to}?username=${search.username}` : to}>{children}</a>
     ),
 }));

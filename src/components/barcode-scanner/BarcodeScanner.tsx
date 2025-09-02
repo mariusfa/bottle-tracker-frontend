@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 
 export interface BarcodeScannerProps {
     onScan: (barcode: string) => void;
@@ -12,8 +12,99 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     onError, 
     isActive 
 }) => {
-    const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+    const scannerRef = useRef<Html5Qrcode | null>(null);
     const [isReady, setIsReady] = useState(false);
+    const [isScanning, setIsScanning] = useState(false);
+
+    const startScanner = useCallback(async () => {
+        if (scannerRef.current && isScanning) {
+            return; // Scanner already running
+        }
+
+        try {
+            setIsReady(false);
+            scannerRef.current = new Html5Qrcode('barcode-scanner');
+
+            // Configuration for scanning
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 }
+            };
+
+            // Success callback
+            const qrCodeSuccessCallback = (decodedText: string) => {
+                onScan(decodedText);
+            };
+
+            // Error callback - only report actual errors
+            const qrCodeErrorCallback = (error: string) => {
+                if (error.includes('NotFoundException') || error.includes('No MultiFormat Readers')) {
+                    return; // Normal scanning state, no barcode found
+                }
+                console.warn('Scanner error:', error);
+            };
+
+            // Start scanning with back camera preference
+            await scannerRef.current.start(
+                { facingMode: "environment" }, // Prefer back camera
+                config,
+                qrCodeSuccessCallback,
+                qrCodeErrorCallback
+            );
+
+            setIsScanning(true);
+            setIsReady(true);
+        } catch {
+            // If back camera fails, try front camera or any available camera
+            try {
+                if (scannerRef.current) {
+                    await scannerRef.current.start(
+                        { facingMode: "user" }, // Front camera fallback
+                        {
+                            fps: 10,
+                            qrbox: { width: 250, height: 250 }
+                        },
+                        (decodedText: string) => onScan(decodedText),
+                        (error: string) => {
+                            if (!error.includes('NotFoundException') && !error.includes('No MultiFormat Readers')) {
+                                console.warn('Scanner error:', error);
+                            }
+                        }
+                    );
+                    setIsScanning(true);
+                    setIsReady(true);
+                }
+            } catch (fallbackError) {
+                onError?.(`Failed to start scanner: ${fallbackError}`);
+                setIsReady(false);
+            }
+        }
+    }, [onScan, onError, isScanning]);
+
+    const stopScanner = useCallback(async () => {
+        if (scannerRef.current && isScanning) {
+            try {
+                await scannerRef.current.stop();
+                scannerRef.current.clear();
+                scannerRef.current = null;
+                setIsScanning(false);
+                setIsReady(false);
+            } catch (error) {
+                console.warn('Error stopping scanner:', error);
+                // Force cleanup even if stop() fails
+                if (scannerRef.current) {
+                    try {
+                        scannerRef.current.clear();
+                    } catch (clearError) {
+                        console.warn('Error clearing scanner:', clearError);
+                    }
+                    scannerRef.current = null;
+                }
+                setIsScanning(false);
+                setIsReady(false);
+            }
+        }
+    }, [isScanning]);
 
     useEffect(() => {
         if (isActive) {
@@ -25,73 +116,22 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         return () => {
             stopScanner();
         };
-    }, [isActive]);
-
-    const startScanner = () => {
-        if (scannerRef.current) {
-            return; // Scanner already running
-        }
-
-        try {
-            scannerRef.current = new Html5QrcodeScanner(
-                'barcode-scanner',
-                {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    formatsToSupport: [
-                        // Common barcode formats
-                        0, // QR_CODE
-                        8, // CODE_128
-                        9, // CODE_39
-                        12, // EAN_13
-                        13, // EAN_8
-                        14, // UPC_A
-                        15  // UPC_E
-                    ]
-                },
-                false
-            );
-
-            scannerRef.current.render(
-                (decodedText: string) => {
-                    onScan(decodedText);
-                },
-                (error: string) => {
-                    // Only report actual errors, not scanning attempts
-                    if (error.includes('NotFoundException')) {
-                        return; // Normal scanning state
-                    }
-                    onError?.(error);
-                }
-            );
-
-            setIsReady(true);
-        } catch (error) {
-            onError?.(`Failed to start scanner: ${error}`);
-        }
-    };
-
-    const stopScanner = () => {
-        if (scannerRef.current) {
-            try {
-                scannerRef.current.clear();
-                scannerRef.current = null;
-                setIsReady(false);
-            } catch (error) {
-                console.warn('Error stopping scanner:', error);
-            }
-        }
-    };
+    }, [isActive, startScanner, stopScanner]);
 
     return (
         <div className="w-full max-w-md mx-auto">
             {isActive ? (
                 <div>
-                    <div id="barcode-scanner" className="rounded-lg overflow-hidden"></div>
+                    <div id="barcode-scanner" className="rounded-lg overflow-hidden bg-black"></div>
                     {!isReady && (
                         <div className="text-center mt-4">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                             <p className="text-sm text-gray-600 mt-2">Starting camera...</p>
+                        </div>
+                    )}
+                    {isReady && (
+                        <div className="text-center mt-4">
+                            <p className="text-sm text-green-600">📷 Scanner ready - Point camera at barcode</p>
                         </div>
                     )}
                 </div>

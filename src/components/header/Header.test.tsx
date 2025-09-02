@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test/test-utils';
 import { describe, it, expect, vi } from 'vitest';
 import { Header } from './Header';
 
@@ -9,6 +9,14 @@ vi.mock('@tanstack/react-router', () => ({
             {children}
         </a>
     ),
+}));
+
+// Mock useAuth hook
+vi.mock('../../hooks/useAuth', () => ({
+    useAuth: () => ({
+        isAuthenticated: false,
+        logout: vi.fn(),
+    }),
 }));
 
 describe('Header', () => {

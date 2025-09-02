@@ -1,7 +1,16 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HomePage } from './HomePage';
 import * as useAuthModule from '../../hooks/useAuth';
+
+// Mock TanStack Router Link component
+vi.mock('@tanstack/react-router', () => ({
+    Link: ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) => (
+        <a href={to} className={className}>
+            {children}
+        </a>
+    ),
+}));
 
 // Mock the useAuth hook
 vi.mock('../../hooks/useAuth', () => ({
@@ -49,7 +58,7 @@ describe('HomePage', () => {
         render(<HomePage />);
 
         expect(screen.getByText('Quick Actions')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Add Bottle' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Search Wine' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'View Collection' })).toBeInTheDocument();
     });
 
