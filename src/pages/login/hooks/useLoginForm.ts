@@ -22,6 +22,7 @@ export interface LoginFormErrors {
 export interface UseLoginFormReturn {
     formData: LoginFormData;
     errors: LoginFormErrors;
+    generalError?: string;
     isSubmitting: boolean;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: React.FormEvent) => Promise<void>;
@@ -36,13 +37,14 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
     const navigate = useNavigate();
     const [formData, setFormData] = useState<LoginFormData>({
         name: initialUsername,
-        password: ''
+        password: '',
     });
     const [errors, setErrors] = useState<LoginFormErrors>({});
+    const [generalError, setGeneralError] = useState<string | undefined>(undefined);
 
     const loginMutation = useMutation({
         mutationFn: loginUser,
-        onSuccess: (response) => {
+        onSuccess: response => {
             authService.setToken(response.token);
             navigate({ to: '/' });
         },
@@ -50,7 +52,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
             if (error.message.includes('500') || error.message.includes('failed')) {
                 setErrors({ password: 'Invalid username or password' });
             } else {
-                alert(`Login failed: ${error.message}`);
+                setGeneralError('A technical error occurred. Please try again.');
             }
         },
     });
@@ -58,10 +60,15 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
-        // Clear error when user starts typing
+
+        // Clear field error when user starts typing
         if (errors[name as keyof LoginFormErrors]) {
             setErrors(prev => ({ ...prev, [name]: undefined }));
+        }
+
+        // Clear general error when user starts typing
+        if (generalError) {
+            setGeneralError(undefined);
         }
     };
 
@@ -84,14 +91,14 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
 
         const userData: LoginUserRequest = {
             name: formData.name.trim(),
-            password: formData.password
+            password: formData.password,
         };
 
         loginMutation.mutate(userData);
@@ -100,10 +107,11 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
     return {
         formData,
         errors,
+        generalError,
         isSubmitting: loginMutation.isPending,
         handleInputChange,
         handleSubmit,
-        validateForm
+        validateForm,
     };
 };
 

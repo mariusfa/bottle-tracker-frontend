@@ -16,7 +16,6 @@ vi.mock('../../../services/userApi', () => ({
 }));
 
 const mockLoginUser = vi.mocked(userApi.loginUser);
-const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
 const mockNavigate = vi.fn();
 
 // Import after mocking
@@ -31,7 +30,7 @@ const createWrapper = () => {
             mutations: { retry: false },
         },
     });
-    
+
     return ({ children }: { children: React.ReactNode }) =>
         React.createElement(QueryClientProvider, { client: queryClient }, children);
 };
@@ -39,7 +38,6 @@ const createWrapper = () => {
 describe('useLoginForm', () => {
     beforeEach(() => {
         mockLoginUser.mockClear();
-        mockAlert.mockClear();
         mockNavigate.mockClear();
         mockUseNavigate.mockReturnValue(mockNavigate);
         vi.clearAllMocks();
@@ -55,6 +53,7 @@ describe('useLoginForm', () => {
             password: '',
         });
         expect(result.current.errors).toEqual({});
+        expect(result.current.generalError).toBeUndefined();
         expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -96,11 +95,50 @@ describe('useLoginForm', () => {
         expect(result.current.errors.name).toBeUndefined();
     });
 
+    it('clears general error when user starts typing', async () => {
+        const { result } = renderHook(() => useLoginForm(), {
+            wrapper: createWrapper(),
+        });
+
+        // First, simulate a general error by triggering a failed submission
+        mockLoginUser.mockRejectedValue(new Error('Network error'));
+
+        act(() => {
+            result.current.handleInputChange({
+                target: { name: 'name', value: 'John' },
+            } as React.ChangeEvent<HTMLInputElement>);
+            result.current.handleInputChange({
+                target: { name: 'password', value: 'pass123' },
+            } as React.ChangeEvent<HTMLInputElement>);
+        });
+
+        await act(async () => {
+            const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+            await result.current.handleSubmit(mockEvent);
+        });
+
+        // Verify general error is set
+        expect(result.current.generalError).toBe('A technical error occurred. Please try again.');
+
+        // Now clear the mock and type in a field
+        mockLoginUser.mockClear();
+
+        act(() => {
+            const mockEvent = {
+                target: { name: 'name', value: 'John Updated' },
+            } as React.ChangeEvent<HTMLInputElement>;
+            result.current.handleInputChange(mockEvent);
+        });
+
+        // General error should be cleared
+        expect(result.current.generalError).toBeUndefined();
+    });
+
     describe('validateForm', () => {
         it('validates required name field', () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             let isValid: boolean = false;
             act(() => {
@@ -113,8 +151,8 @@ describe('useLoginForm', () => {
 
         it('trims whitespace from name validation', () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 const mockEvent = {
@@ -134,8 +172,8 @@ describe('useLoginForm', () => {
 
         it('validates required password field', () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             let isValid: boolean = false;
             act(() => {
@@ -148,8 +186,8 @@ describe('useLoginForm', () => {
 
         it('returns true when all validation passes', () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 result.current.handleInputChange({
@@ -173,8 +211,8 @@ describe('useLoginForm', () => {
     describe('handleSubmit', () => {
         it('prevents default and does not submit if validation fails', async () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
             const mockPreventDefault = vi.fn();
 
             await act(async () => {
@@ -191,8 +229,8 @@ describe('useLoginForm', () => {
 
         it('submits form with valid data', async () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
             mockLoginUser.mockResolvedValue({ token: mockToken });
@@ -221,7 +259,7 @@ describe('useLoginForm', () => {
                 name: 'John Doe', // Should be trimmed
                 password: 'password123',
             });
-            expect(mockAlert).not.toHaveBeenCalled();
+            expect(result.current.generalError).toBeUndefined();
         });
 
         it('navigates to home page on successful login', async () => {
@@ -302,14 +340,46 @@ describe('useLoginForm', () => {
             });
 
             expect(result.current.errors.password).toBe('Invalid username or password');
+            expect(result.current.generalError).toBeUndefined();
+        });
+
+        it('handles generic login errors with generalError', async () => {
+            const { result } = renderHook(() => useLoginForm(), {
+                wrapper: createWrapper(),
+            });
+
+            mockLoginUser.mockRejectedValue(new Error('Network error'));
+
+            // Set up valid form data
+            act(() => {
+                result.current.handleInputChange({
+                    target: { name: 'name', value: 'John Doe' },
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'password', value: 'password123' },
+                } as React.ChangeEvent<HTMLInputElement>);
+            });
+
+            await act(async () => {
+                const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+                await result.current.handleSubmit(mockEvent);
+            });
+
+            expect(result.current.generalError).toBe(
+                'A technical error occurred. Please try again.'
+            );
+            expect(result.current.errors.password).toBeUndefined();
         });
 
         it('sets and resets isSubmitting state during submission', async () => {
             const { result } = renderHook(() => useLoginForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
-            mockLoginUser.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({ token: 'test-token' }), 100)));
+            mockLoginUser.mockImplementation(
+                () =>
+                    new Promise(resolve => setTimeout(() => resolve({ token: 'test-token' }), 100))
+            );
 
             // Set up valid form data
             act(() => {
@@ -326,7 +396,7 @@ describe('useLoginForm', () => {
 
             // Start the submission
             const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-            
+
             act(() => {
                 result.current.handleSubmit(mockEvent);
             });

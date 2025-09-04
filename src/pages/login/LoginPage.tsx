@@ -10,14 +10,9 @@ import { PageLayout } from '../../components/page-layout/PageLayout';
 const LoginPage: React.FC = () => {
     const search = useSearch({ from: '/login' });
     const initialUsername = search.username || '';
-    
-    const {
-        formData,
-        errors,
-        isSubmitting,
-        handleInputChange,
-        handleSubmit
-    } = useLoginForm({ initialUsername });
+
+    const { formData, errors, generalError, isSubmitting, handleInputChange, handleSubmit } =
+        useLoginForm({ initialUsername });
 
     return (
         <PageLayout>
@@ -48,10 +43,13 @@ const LoginPage: React.FC = () => {
                         error={errors.password}
                     />
 
-                    <Button
-                        type="submit"
-                        loading={isSubmitting}
-                    >
+                    {generalError && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                            {generalError}
+                        </div>
+                    )}
+
+                    <Button type="submit" loading={isSubmitting}>
                         {isSubmitting ? 'Signing In...' : 'Sign In'}
                     </Button>
                 </form>
@@ -59,7 +57,10 @@ const LoginPage: React.FC = () => {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Don't have an account?{' '}
-                        <a href="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+                        <a
+                            href="/register"
+                            className="text-blue-600 hover:text-blue-700 font-medium"
+                        >
                             Create one here
                         </a>
                     </p>

@@ -5,12 +5,12 @@ import { LoginPage } from './LoginPage';
 
 // Mock TanStack Router hooks
 vi.mock('@tanstack/react-router', () => ({
-    useSearch: vi.fn()
+    useSearch: vi.fn(),
 }));
 
 // Mock the useLoginForm hook for isolated component testing
 vi.mock('./hooks/useLoginForm', () => ({
-    useLoginForm: vi.fn()
+    useLoginForm: vi.fn(),
 }));
 
 import { useSearch } from '@tanstack/react-router';
@@ -29,10 +29,11 @@ describe('LoginPage', () => {
     const defaultHookReturn = {
         formData: { name: '', password: '' },
         errors: {},
+        generalError: undefined,
         isSubmitting: false,
         handleInputChange: vi.fn(),
         handleSubmit: vi.fn(),
-        validateForm: vi.fn()
+        validateForm: vi.fn(),
     };
 
     it('renders login form with all fields', () => {
@@ -47,7 +48,7 @@ describe('LoginPage', () => {
     it('displays form values from hook', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            formData: { name: 'John Doe', password: 'password123' }
+            formData: { name: 'John Doe', password: 'password123' },
         };
         renderLoginPage(hookReturn);
 
@@ -60,8 +61,8 @@ describe('LoginPage', () => {
             ...defaultHookReturn,
             errors: {
                 name: 'Name is required',
-                password: 'Password is required'
-            }
+                password: 'Password is required',
+            },
         };
         renderLoginPage(hookReturn);
 
@@ -74,7 +75,7 @@ describe('LoginPage', () => {
         const handleInputChange = vi.fn();
         const hookReturn = {
             ...defaultHookReturn,
-            handleInputChange
+            handleInputChange,
         };
         renderLoginPage(hookReturn);
 
@@ -82,18 +83,20 @@ describe('LoginPage', () => {
         await user.type(nameInput, 'John');
 
         expect(handleInputChange).toHaveBeenCalledTimes(4); // One for each character
-        expect(handleInputChange).toHaveBeenCalledWith(expect.objectContaining({
-            target: expect.objectContaining({
-                name: 'name'
+        expect(handleInputChange).toHaveBeenCalledWith(
+            expect.objectContaining({
+                target: expect.objectContaining({
+                    name: 'name',
+                }),
             })
-        }));
+        );
     });
 
     it('calls handleSubmit when form is submitted', async () => {
         const handleSubmit = vi.fn();
         const hookReturn = {
             ...defaultHookReturn,
-            handleSubmit
+            handleSubmit,
         };
         renderLoginPage(hookReturn);
 
@@ -101,15 +104,17 @@ describe('LoginPage', () => {
         fireEvent.submit(form!);
 
         expect(handleSubmit).toHaveBeenCalledTimes(1);
-        expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
-            preventDefault: expect.any(Function)
-        }));
+        expect(handleSubmit).toHaveBeenCalledWith(
+            expect.objectContaining({
+                preventDefault: expect.any(Function),
+            })
+        );
     });
 
     it('shows loading state when submitting', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            isSubmitting: true
+            isSubmitting: true,
         };
         renderLoginPage(hookReturn);
 
@@ -121,7 +126,7 @@ describe('LoginPage', () => {
     it('applies error styling to fields with errors', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            errors: { name: 'Name is required' }
+            errors: { name: 'Name is required' },
         };
         renderLoginPage(hookReturn);
 
@@ -149,5 +154,28 @@ describe('LoginPage', () => {
         renderLoginPage(defaultHookReturn, searchParams);
 
         expect(mockUseLoginForm).toHaveBeenCalledWith({ initialUsername: '' });
+    });
+
+    it('displays general error when present', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            generalError: 'A technical error occurred. Please try again.',
+        };
+        renderLoginPage(hookReturn);
+
+        expect(
+            screen.getByText('A technical error occurred. Please try again.')
+        ).toBeInTheDocument();
+        expect(screen.getByText('A technical error occurred. Please try again.')).toHaveClass(
+            'bg-red-50',
+            'border-red-200',
+            'text-red-700'
+        );
+    });
+
+    it('does not display error UI when no general error', () => {
+        renderLoginPage(defaultHookReturn);
+
+        expect(screen.queryByText(/technical error/i)).not.toBeInTheDocument();
     });
 });
