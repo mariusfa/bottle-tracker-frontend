@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '../../test/test-utils';
+import { render } from '../../test/test-utils';
+import { screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HomePage } from './HomePage';
 import * as useAuthModule from '../../hooks/useAuth';
