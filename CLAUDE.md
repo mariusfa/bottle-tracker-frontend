@@ -76,7 +76,7 @@ Mock custom hooks using this consistent pattern:
 ```tsx
 // Mock the hook module
 vi.mock('./hooks/useMyHook', () => ({
-    useMyHook: vi.fn()
+    useMyHook: vi.fn(),
 }));
 
 // Import the hook
@@ -90,7 +90,7 @@ beforeEach(() => {
     mockUseMyHook.mockReturnValue({
         data: mockData,
         loading: false,
-        error: null
+        error: null,
     });
 });
 ```
@@ -104,6 +104,7 @@ Do NOT use star imports for hook mocking - use direct named imports instead.
 Follow this iterative approach for creating new components:
 
 **Step 1: View with dummy hook**
+
 - Create the component view with a dummy custom hook that returns realistic test data
 - Define types/interfaces based on how the component will use the data
 - Include loading and error states in the dummy hook
@@ -111,25 +112,30 @@ Follow this iterative approach for creating new components:
 - Commit and push as "complete" task
 
 **Step 2: Hook implementation**
+
 - Replace dummy hook with actual implementation (API calls, state management, etc.)
 - Maintain the same interface established in step 1
 - Write tests for the custom hook covering edge cases
 - Commit and push as separate task
 
 **Benefits:**
+
 - Components use proper patterns from day 1
 - Types/interfaces evolve naturally based on actual usage
 - Tests remain stable when switching from dummy to real implementation
 - Small, focused commits make changes easier to track and review
 
 Example dummy hook structure:
+
 ```tsx
 const useBottleData = () => {
-  return {
-    bottles: [/* realistic test data */],
-    loading: false,
-    error: null
-  };
+    return {
+        bottles: [
+            /* realistic test data */
+        ],
+        loading: false,
+        error: null,
+    };
 };
 ```
 

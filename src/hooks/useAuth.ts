@@ -59,7 +59,7 @@ export const useAuth = (): UseAuthReturn => {
 
         // Listen for storage events (from other tabs)
         window.addEventListener('storage', handleStorageChange);
-        
+
         // Also check periodically for changes in the same tab
         const interval = setInterval(handleStorageChange, 100);
 

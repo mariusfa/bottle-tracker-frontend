@@ -46,7 +46,7 @@ const WineSearchPage: React.FC = () => {
                     {/* Barcode Scanner Section */}
                     <div className="text-center">
                         <div className="mb-4">
-                            <Button 
+                            <Button
                                 onClick={handleStartScanning}
                                 disabled={isScanning || isSearching}
                                 variant={isScanning ? 'secondary' : 'primary'}
@@ -58,15 +58,12 @@ const WineSearchPage: React.FC = () => {
                         <BarcodeScanner
                             isActive={isScanning}
                             onScan={handleScan}
-                            onError={(error) => console.error('Scanner error:', error)}
+                            onError={error => console.error('Scanner error:', error)}
                         />
 
                         {isScanning && (
                             <div className="mt-4">
-                                <Button 
-                                    variant="secondary"
-                                    onClick={() => setIsScanning(false)}
-                                >
+                                <Button variant="secondary" onClick={() => setIsScanning(false)}>
                                     Stop Scanner
                                 </Button>
                                 <p className="text-sm text-gray-500 mt-2">
@@ -88,14 +85,11 @@ const WineSearchPage: React.FC = () => {
                                     type="text"
                                     name="barcode"
                                     value={manualBarcode}
-                                    onChange={(e) => setManualBarcode(e.target.value)}
+                                    onChange={e => setManualBarcode(e.target.value)}
                                     placeholder="Enter barcode number"
                                 />
                             </div>
-                            <Button 
-                                type="submit" 
-                                disabled={!manualBarcode.trim() || isSearching}
-                            >
+                            <Button type="submit" disabled={!manualBarcode.trim() || isSearching}>
                                 {isSearching ? 'Searching...' : 'Search'}
                             </Button>
                         </form>
@@ -109,11 +103,11 @@ const WineSearchPage: React.FC = () => {
                                     <h3 className="text-lg font-semibold text-red-900 mb-4">
                                         Search Error
                                     </h3>
-                                    <p className="text-red-800 mb-4">
-                                        {searchResult.error}
-                                    </p>
+                                    <p className="text-red-800 mb-4">{searchResult.error}</p>
                                     <div className="text-sm text-red-700">
-                                        <p><strong>Barcode searched:</strong> {currentBarcode}</p>
+                                        <p>
+                                            <strong>Barcode searched:</strong> {currentBarcode}
+                                        </p>
                                     </div>
                                 </div>
                             ) : searchResult.found && searchResult.wine ? (
@@ -122,15 +116,29 @@ const WineSearchPage: React.FC = () => {
                                         Wine Found in Your Collection! 🍷
                                     </h3>
                                     <div className="space-y-2 text-sm text-green-800">
-                                        <p><strong>Name:</strong> {searchResult.wine.name}</p>
-                                        <p><strong>Country:</strong> {searchResult.wine.country}</p>
-                                        <p><strong>Type:</strong> {searchResult.wine.type}</p>
+                                        <p>
+                                            <strong>Name:</strong> {searchResult.wine.name}
+                                        </p>
+                                        <p>
+                                            <strong>Country:</strong> {searchResult.wine.country}
+                                        </p>
+                                        <p>
+                                            <strong>Type:</strong> {searchResult.wine.type}
+                                        </p>
                                         {searchResult.wine.vintage_year && (
-                                            <p><strong>Vintage:</strong> {searchResult.wine.vintage_year}</p>
+                                            <p>
+                                                <strong>Vintage:</strong>{' '}
+                                                {searchResult.wine.vintage_year}
+                                            </p>
                                         )}
-                                        <p><strong>Rating:</strong> {searchResult.wine.rating}</p>
+                                        <p>
+                                            <strong>Rating:</strong> {searchResult.wine.rating}
+                                        </p>
                                         {searchResult.wine.barcode && (
-                                            <p><strong>Barcode:</strong> {searchResult.wine.barcode}</p>
+                                            <p>
+                                                <strong>Barcode:</strong>{' '}
+                                                {searchResult.wine.barcode}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -140,19 +148,17 @@ const WineSearchPage: React.FC = () => {
                                         Wine Not Found in Your Collection
                                     </h3>
                                     <p className="text-yellow-800 mb-4">
-                                        Barcode <strong>{currentBarcode}</strong> is not in your collection yet. Would you like to add it?
+                                        Barcode <strong>{currentBarcode}</strong> is not in your
+                                        collection yet. Would you like to add it?
                                     </p>
-                                    <Link 
-                                        to="/wines/add" 
-                                        search={{ barcode: currentBarcode }}
-                                    >
+                                    <Link to="/wines/add" search={{ barcode: currentBarcode }}>
                                         <Button>Add This Wine</Button>
                                     </Link>
                                 </div>
                             )}
-                            
+
                             <div className="mt-4 text-center">
-                                <Button 
+                                <Button
                                     variant="secondary"
                                     onClick={() => {
                                         clearSearch();
@@ -173,9 +179,7 @@ const WineSearchPage: React.FC = () => {
                                 <h3 className="text-lg font-semibold text-red-900 mb-4">
                                     Connection Error
                                 </h3>
-                                <p className="text-red-800 mb-4">
-                                    Unable to search wines: {error}
-                                </p>
+                                <p className="text-red-800 mb-4">Unable to search wines: {error}</p>
                                 <p className="text-sm text-red-700">
                                     Please check your internet connection and try again.
                                 </p>

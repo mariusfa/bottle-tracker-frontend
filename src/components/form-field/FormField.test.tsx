@@ -9,7 +9,7 @@ describe('FormField', () => {
         type: 'text' as const,
         name: 'testField',
         value: '',
-        onChange: vi.fn()
+        onChange: vi.fn(),
     };
 
     it('renders label and input field', () => {
@@ -40,11 +40,13 @@ describe('FormField', () => {
         await user.type(input, 'a');
 
         expect(onChange).toHaveBeenCalledTimes(1);
-        expect(onChange).toHaveBeenCalledWith(expect.objectContaining({
-            target: expect.objectContaining({
-                name: 'testField'
+        expect(onChange).toHaveBeenCalledWith(
+            expect.objectContaining({
+                target: expect.objectContaining({
+                    name: 'testField',
+                }),
             })
-        }));
+        );
     });
 
     it('renders password input when type is password', () => {

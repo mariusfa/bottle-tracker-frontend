@@ -52,7 +52,7 @@ export const validateUser = async (token: string): Promise<void> => {
     const response = await fetch(buildApiUrl('/users/validate'), {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 

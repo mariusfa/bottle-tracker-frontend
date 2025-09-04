@@ -4,19 +4,19 @@ export const WineType = {
     RED: 'RED',
     WHITE: 'WHITE',
     SPARKLING: 'SPARKLING',
-    ROSE: 'ROSE'
+    ROSE: 'ROSE',
 } as const;
 
-export type WineType = typeof WineType[keyof typeof WineType];
+export type WineType = (typeof WineType)[keyof typeof WineType];
 
 export const WineRating = {
     GOOD: 'GOOD',
     OK: 'OK',
     BAD: 'BAD',
-    NONE: 'NONE'
+    NONE: 'NONE',
 } as const;
 
-export type WineRating = typeof WineRating[keyof typeof WineRating];
+export type WineRating = (typeof WineRating)[keyof typeof WineRating];
 
 // API Response DTOs
 export interface GetWineDTO {

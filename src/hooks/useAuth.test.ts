@@ -63,7 +63,7 @@ describe('useAuth', () => {
 
     it('initializes with unauthenticated state when no token', () => {
         mockAuthService.getToken.mockReturnValue(null);
-        
+
         const { result } = renderHook(() => useAuth(), {
             wrapper: createWrapper(),
         });

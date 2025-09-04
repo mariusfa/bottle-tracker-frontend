@@ -31,5 +31,5 @@ export const authService = {
     logout: (): void => {
         authService.removeToken();
         // Could also clear other user-related data here
-    }
+    },
 };

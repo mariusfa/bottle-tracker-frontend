@@ -16,7 +16,8 @@ const WelcomePage: React.FC = () => {
 
                 <div className="text-center space-y-6">
                     <p className="text-gray-600 text-lg">
-                        Get started by creating an account or signing in to manage your wine collection.
+                        Get started by creating an account or signing in to manage your wine
+                        collection.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">

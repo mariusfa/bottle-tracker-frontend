@@ -3,7 +3,7 @@ const getApiBaseUrl = (): string => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:8080';
     }
-    
+
     // Production API URL
     return 'https://bottle-tracker-go-api.up.railway.app';
 };

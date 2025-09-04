@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
-import type { WineFormData, WineFormErrors, CreateWineDTO, ExternalWineSearchResult } from '../../../types/wine';
+import type {
+    WineFormData,
+    WineFormErrors,
+    CreateWineDTO,
+    ExternalWineSearchResult,
+} from '../../../types/wine';
 import { WineType, WineRating } from '../../../types/wine';
 import { createWine, getExternalWineByBarcode } from '../../../services/wineApi';
 
@@ -27,11 +32,13 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         vintageYear: '',
         type: '' as WineType | '',
         rating: WineRating.NONE,
-        barcode: initialBarcode
+        barcode: initialBarcode,
     });
 
     const [errors, setErrors] = useState<WineFormErrors>({});
-    const [externalWineResult, setExternalWineResult] = useState<ExternalWineSearchResult | null>(null);
+    const [externalWineResult, setExternalWineResult] = useState<ExternalWineSearchResult | null>(
+        null
+    );
 
     // Auto-fetch external wine data when barcode is present
     useEffect(() => {
@@ -55,25 +62,25 @@ const useAddWineForm = (): UseAddWineFormReturn => {
 
     const externalWineMutation = useMutation({
         mutationFn: getExternalWineByBarcode,
-        onSuccess: (externalWine) => {
+        onSuccess: externalWine => {
             setExternalWineResult({
                 wine: externalWine,
-                found: true
+                found: true,
             });
-            
+
             // Prefill form with external wine data
             setFormData(prev => ({
                 ...prev,
                 name: externalWine.name || prev.name,
                 country: externalWine.country || prev.country,
                 // Note: external wine type might need mapping
-                type: prev.type // Keep existing selection for now
+                type: prev.type, // Keep existing selection for now
             }));
         },
         onError: (error: Error) => {
             console.log('External wine not found:', error.message);
             setExternalWineResult({
-                found: false
+                found: false,
             });
         },
     });
@@ -87,7 +94,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         // Clear error when user starts typing
         if (errors[name as keyof WineFormErrors]) {
             setErrors(prev => ({ ...prev, [name]: undefined }));
@@ -125,7 +132,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
@@ -154,7 +161,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
             vintageYear: '',
             type: '' as WineType | '',
             rating: WineRating.NONE,
-            barcode: ''
+            barcode: '',
         });
         setErrors({});
         setExternalWineResult(null);
@@ -169,7 +176,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         handleInputChange,
         handleSubmit,
         validateForm,
-        resetForm
+        resetForm,
     };
 };
 

@@ -102,6 +102,13 @@ describe('PageLayout', () => {
         );
 
         const outerContainer = screen.getByTestId('content').parentElement?.parentElement;
-        expect(outerContainer).toHaveClass('max-w-lg', 'mx-auto', 'py-6', 'sm:px-6', 'lg:px-8', 'extra-class');
+        expect(outerContainer).toHaveClass(
+            'max-w-lg',
+            'mx-auto',
+            'py-6',
+            'sm:px-6',
+            'lg:px-8',
+            'extra-class'
+        );
     });
 });

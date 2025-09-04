@@ -60,7 +60,11 @@ describe('Button', () => {
     it('does not call onClick when disabled', async () => {
         const user = userEvent.setup();
         const onClick = vi.fn();
-        render(<Button disabled onClick={onClick}>Disabled</Button>);
+        render(
+            <Button disabled onClick={onClick}>
+                Disabled
+            </Button>
+        );
 
         await user.click(screen.getByRole('button'));
 
@@ -70,7 +74,11 @@ describe('Button', () => {
     it('does not call onClick when loading', async () => {
         const user = userEvent.setup();
         const onClick = vi.fn();
-        render(<Button loading onClick={onClick}>Loading</Button>);
+        render(
+            <Button loading onClick={onClick}>
+                Loading
+            </Button>
+        );
 
         await user.click(screen.getByRole('button'));
 
@@ -99,7 +107,11 @@ describe('Button', () => {
     });
 
     it('applies disabled styling for secondary variant when disabled', () => {
-        render(<Button variant="secondary" disabled>Disabled Secondary</Button>);
+        render(
+            <Button variant="secondary" disabled>
+                Disabled Secondary
+            </Button>
+        );
 
         const button = screen.getByRole('button');
         expect(button).toHaveClass('bg-gray-100', 'text-gray-400');

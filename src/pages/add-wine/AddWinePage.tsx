@@ -15,7 +15,7 @@ const AddWinePage: React.FC = () => {
         isLoadingExternal,
         externalWineResult,
         handleInputChange,
-        handleSubmit
+        handleSubmit,
     } = useAddWineForm();
 
     const barcode = formData.barcode;
@@ -25,7 +25,11 @@ const AddWinePage: React.FC = () => {
             <Card>
                 <PageHeader
                     title="Add New Wine"
-                    subtitle={barcode ? `Adding wine with barcode: ${barcode}` : "Add a wine to your collection"}
+                    subtitle={
+                        barcode
+                            ? `Adding wine with barcode: ${barcode}`
+                            : 'Add a wine to your collection'
+                    }
                 />
 
                 {/* External Wine Info */}
@@ -42,20 +46,38 @@ const AddWinePage: React.FC = () => {
                     <div className="mb-6">
                         {externalWineResult.found && externalWineResult.wine ? (
                             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <h3 className="text-green-900 font-semibold mb-2">Wine Information Found! 🍷</h3>
+                                <h3 className="text-green-900 font-semibold mb-2">
+                                    Wine Information Found! 🍷
+                                </h3>
                                 <div className="text-sm text-green-800 space-y-1">
-                                    <p><strong>Name:</strong> {externalWineResult.wine.name}</p>
-                                    <p><strong>Country:</strong> {externalWineResult.wine.country}</p>
-                                    <p><strong>Type:</strong> {externalWineResult.wine.type}</p>
-                                    <p><strong>Price:</strong> {externalWineResult.wine.price} kr</p>
-                                    <p><strong>Volume:</strong> {externalWineResult.wine.volume} ml</p>
+                                    <p>
+                                        <strong>Name:</strong> {externalWineResult.wine.name}
+                                    </p>
+                                    <p>
+                                        <strong>Country:</strong> {externalWineResult.wine.country}
+                                    </p>
+                                    <p>
+                                        <strong>Type:</strong> {externalWineResult.wine.type}
+                                    </p>
+                                    <p>
+                                        <strong>Price:</strong> {externalWineResult.wine.price} kr
+                                    </p>
+                                    <p>
+                                        <strong>Volume:</strong> {externalWineResult.wine.volume} ml
+                                    </p>
                                 </div>
-                                <p className="text-green-700 text-sm mt-2">Form has been prefilled with available information.</p>
+                                <p className="text-green-700 text-sm mt-2">
+                                    Form has been prefilled with available information.
+                                </p>
                             </div>
                         ) : (
                             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                <h3 className="text-yellow-900 font-semibold mb-2">No External Information Found</h3>
-                                <p className="text-yellow-800 text-sm">Please fill in the wine details manually.</p>
+                                <h3 className="text-yellow-900 font-semibold mb-2">
+                                    No External Information Found
+                                </h3>
+                                <p className="text-yellow-800 text-sm">
+                                    Please fill in the wine details manually.
+                                </p>
                             </div>
                         )}
                     </div>
@@ -146,10 +168,7 @@ const AddWinePage: React.FC = () => {
                             readOnly={!!barcode}
                         />
 
-                        <Button 
-                            type="submit"
-                            loading={isSubmitting}
-                        >
+                        <Button type="submit" loading={isSubmitting}>
                             {isSubmitting ? 'Adding Wine...' : 'Add Wine'}
                         </Button>
                     </form>

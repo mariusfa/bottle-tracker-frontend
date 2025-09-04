@@ -1,12 +1,14 @@
 # REQUIREMENTS.md
 
 ## Authentication
+
 - [ ] User registration
 - [ ] User login
 - [ ] JWT token handling for API authentication
 - [ ] Protected routes (require authentication)
 
 ## Wine Search & Add Feature
+
 - [ ] Barcode scanning functionality
 - [ ] Free text search in user's wine database (API)
 - [ ] Search wine by barcode in user's wine database (API)

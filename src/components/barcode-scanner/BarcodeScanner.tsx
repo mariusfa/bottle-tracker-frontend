@@ -7,11 +7,7 @@ export interface BarcodeScannerProps {
     isActive: boolean;
 }
 
-const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ 
-    onScan, 
-    onError, 
-    isActive 
-}) => {
+const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ onScan, onError, isActive }) => {
     const scannerRef = useRef<Html5Qrcode | null>(null);
     const [isReady, setIsReady] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
@@ -28,7 +24,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             // Configuration for scanning
             const config = {
                 fps: 10,
-                qrbox: { width: 250, height: 250 }
+                qrbox: { width: 250, height: 250 },
             };
 
             // Success callback
@@ -38,7 +34,10 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
             // Error callback - only report actual errors
             const qrCodeErrorCallback = (error: string) => {
-                if (error.includes('NotFoundException') || error.includes('No MultiFormat Readers')) {
+                if (
+                    error.includes('NotFoundException') ||
+                    error.includes('No MultiFormat Readers')
+                ) {
                     return; // Normal scanning state, no barcode found
                 }
                 console.warn('Scanner error:', error);
@@ -46,7 +45,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
             // Start scanning with back camera preference
             await scannerRef.current.start(
-                { facingMode: "environment" }, // Prefer back camera
+                { facingMode: 'environment' }, // Prefer back camera
                 config,
                 qrCodeSuccessCallback,
                 qrCodeErrorCallback
@@ -59,14 +58,17 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             try {
                 if (scannerRef.current) {
                     await scannerRef.current.start(
-                        { facingMode: "user" }, // Front camera fallback
+                        { facingMode: 'user' }, // Front camera fallback
                         {
                             fps: 10,
-                            qrbox: { width: 250, height: 250 }
+                            qrbox: { width: 250, height: 250 },
                         },
                         (decodedText: string) => onScan(decodedText),
                         (error: string) => {
-                            if (!error.includes('NotFoundException') && !error.includes('No MultiFormat Readers')) {
+                            if (
+                                !error.includes('NotFoundException') &&
+                                !error.includes('No MultiFormat Readers')
+                            ) {
                                 console.warn('Scanner error:', error);
                             }
                         }
@@ -131,7 +133,9 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                     )}
                     {isReady && (
                         <div className="text-center mt-4">
-                            <p className="text-sm text-green-600">📷 Scanner ready - Point camera at barcode</p>
+                            <p className="text-sm text-green-600">
+                                📷 Scanner ready - Point camera at barcode
+                            </p>
                         </div>
                     )}
                 </div>

@@ -129,7 +129,7 @@ describe('Header', () => {
             render(<Header />);
 
             const hamburgerButton = screen.getByRole('button', { name: /menu/i });
-            
+
             // Open dropdown
             await user.click(hamburgerButton);
             expect(screen.getByTestId('mobile-dropdown')).toBeInTheDocument();
@@ -150,7 +150,7 @@ describe('Header', () => {
             const dropdown = screen.getByTestId('mobile-dropdown');
             const dropdownSignIn = dropdown.querySelector('a[href="/login"]');
             const dropdownGetStarted = dropdown.querySelector('a[href="/register"]');
-            
+
             expect(dropdownSignIn).toHaveTextContent('Sign In');
             expect(dropdownGetStarted).toHaveTextContent('Get Started');
         });
@@ -161,7 +161,7 @@ describe('Header', () => {
 
             const hamburgerButton = screen.getByRole('button', { name: /menu/i });
             await user.click(hamburgerButton);
-            
+
             expect(screen.getByTestId('mobile-dropdown')).toBeInTheDocument();
 
             // Click outside the dropdown
@@ -175,7 +175,7 @@ describe('Header', () => {
 
             const hamburgerButton = screen.getByRole('button', { name: /menu/i });
             await user.click(hamburgerButton);
-            
+
             expect(screen.getByTestId('mobile-dropdown')).toBeInTheDocument();
 
             // Press escape key
@@ -203,7 +203,7 @@ describe('Header', () => {
             const dropdown = screen.getByTestId('mobile-dropdown');
             const dropdownSearchWine = dropdown.querySelector('a[href="/wines/search"]');
             const dropdownSignOut = dropdown.querySelector('button');
-            
+
             expect(dropdownSearchWine).toHaveTextContent('Search Wine');
             expect(dropdownSignOut).toHaveTextContent('Sign Out');
         });
@@ -225,9 +225,9 @@ describe('Header', () => {
 
             const dropdown = screen.getByTestId('mobile-dropdown');
             const signOutButton = dropdown.querySelector('button');
-            
+
             expect(signOutButton).toBeInTheDocument();
-            
+
             if (signOutButton) {
                 await user.click(signOutButton);
                 expect(mockLogout).toHaveBeenCalledTimes(1);

@@ -11,23 +11,17 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     title,
     subtitle,
     align = 'center',
-    className = ''
+    className = '',
 }) => {
     const alignmentClasses = {
         left: 'text-left',
-        center: 'text-center'
+        center: 'text-center',
     };
 
     return (
         <div className={`mb-8 ${alignmentClasses[align]} ${className}`}>
-            <h1 className="text-3xl font-bold text-blue-600 mb-2">
-                {title}
-            </h1>
-            {subtitle && (
-                <p className="text-gray-600">
-                    {subtitle}
-                </p>
-            )}
+            <h1 className="text-3xl font-bold text-blue-600 mb-2">{title}</h1>
+            {subtitle && <p className="text-gray-600">{subtitle}</p>}
         </div>
     );
 };

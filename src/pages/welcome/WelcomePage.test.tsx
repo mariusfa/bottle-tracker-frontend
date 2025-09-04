@@ -13,14 +13,20 @@ describe('WelcomePage', () => {
     it('renders welcome heading and subtitle', () => {
         render(<WelcomePage />);
 
-        expect(screen.getByRole('heading', { name: 'Welcome to Bottle Tracker' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: 'Welcome to Bottle Tracker' })
+        ).toBeInTheDocument();
         expect(screen.getByText('Your personal wine collection manager')).toBeInTheDocument();
     });
 
     it('renders description text', () => {
         render(<WelcomePage />);
 
-        expect(screen.getByText('Get started by creating an account or signing in to manage your wine collection.')).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Get started by creating an account or signing in to manage your wine collection.'
+            )
+        ).toBeInTheDocument();
     });
 
     it('renders Create Account button with correct link', () => {

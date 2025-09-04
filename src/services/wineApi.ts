@@ -8,7 +8,7 @@ export const searchWineByBarcode = async (barcode: string): Promise<GetWineDTO> 
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`,
+            Authorization: `Bearer ${authService.getToken()}`,
         },
     });
 
@@ -28,7 +28,7 @@ export const getAllUserWines = async (): Promise<GetWineDTO[]> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`,
+            Authorization: `Bearer ${authService.getToken()}`,
         },
     });
 
@@ -44,7 +44,7 @@ export const getWineById = async (id: string): Promise<GetWineDTO> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`,
+            Authorization: `Bearer ${authService.getToken()}`,
         },
     });
 
@@ -64,7 +64,7 @@ export const createWine = async (wine: CreateWineDTO): Promise<void> => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`,
+            Authorization: `Bearer ${authService.getToken()}`,
         },
         body: JSON.stringify(wine),
     });
@@ -72,7 +72,7 @@ export const createWine = async (wine: CreateWineDTO): Promise<void> => {
     if (!response.ok) {
         throw new Error(`Failed to create wine: ${response.statusText}`);
     }
-    
+
     // API returns 201 Created with no body
 };
 
@@ -81,7 +81,7 @@ export const updateWine = async (id: string, wine: UpdateWineDTO): Promise<void>
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`,
+            Authorization: `Bearer ${authService.getToken()}`,
         },
         body: JSON.stringify(wine),
     });
@@ -89,7 +89,7 @@ export const updateWine = async (id: string, wine: UpdateWineDTO): Promise<void>
     if (!response.ok) {
         throw new Error(`Failed to update wine: ${response.statusText}`);
     }
-    
+
     // API returns success with no body
 };
 
@@ -98,25 +98,28 @@ export const deleteWine = async (id: string): Promise<void> => {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`,
+            Authorization: `Bearer ${authService.getToken()}`,
         },
     });
 
     if (!response.ok) {
         throw new Error(`Failed to delete wine: ${response.statusText}`);
     }
-    
+
     // API returns success with no body
 };
 
 // External wine API calls (no authentication required)
 export const getExternalWineByBarcode = async (barcode: string): Promise<ExternalWine> => {
-    const response = await fetch(buildApiUrl(`/wines/external/barcode/${encodeURIComponent(barcode)}`), {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    const response = await fetch(
+        buildApiUrl(`/wines/external/barcode/${encodeURIComponent(barcode)}`),
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    );
 
     if (response.status === 404) {
         throw new Error('Wine not found in external database');

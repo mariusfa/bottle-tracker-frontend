@@ -1,4 +1,5 @@
 # TODO
+
 Cleanup tasks:
 
 - header.tsx split into subcomponents. It is large. mobile and desktop components which is used in header.tsx?

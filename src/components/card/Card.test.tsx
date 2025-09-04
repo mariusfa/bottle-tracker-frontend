@@ -87,6 +87,13 @@ describe('Card', () => {
         );
 
         const cardContainer = screen.getByTestId('card-content').parentElement;
-        expect(cardContainer).toHaveClass('bg-white', 'shadow', 'rounded-lg', 'p-6', 'mt-4', 'mb-2');
+        expect(cardContainer).toHaveClass(
+            'bg-white',
+            'shadow',
+            'rounded-lg',
+            'p-6',
+            'mt-4',
+            'mb-2'
+        );
     });
 });
