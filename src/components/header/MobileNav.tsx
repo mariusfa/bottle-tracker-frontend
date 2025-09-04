@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
+import { useAuth } from '../../hooks/useAuth';
 
-type Props = {
-    isAuthenticated: boolean;
-    onLogout: () => void;
-};
-
-const MobileNav: React.FC<Props> = ({ isAuthenticated, onLogout }) => {
+const MobileNav: React.FC = () => {
+    const { isAuthenticated, logout } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +40,7 @@ const MobileNav: React.FC<Props> = ({ isAuthenticated, onLogout }) => {
     };
 
     const handleLogout = () => {
-        onLogout();
+        logout();
         setIsMobileMenuOpen(false);
     };
 

@@ -1,12 +1,9 @@
 import React from 'react';
 import { Link } from '@tanstack/react-router';
-import { useAuth } from '../../hooks/useAuth';
 import { DesktopNav } from './DesktopNav';
 import { MobileNav } from './MobileNav';
 
 const Header: React.FC = () => {
-    const { isAuthenticated, logout } = useAuth();
-
     return (
         <nav className="bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,8 +19,8 @@ const Header: React.FC = () => {
                         </div>
                     </div>
 
-                    <DesktopNav isAuthenticated={isAuthenticated} onLogout={logout} />
-                    <MobileNav isAuthenticated={isAuthenticated} onLogout={logout} />
+                    <DesktopNav />
+                    <MobileNav />
                 </div>
             </div>
         </nav>

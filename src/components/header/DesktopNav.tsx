@@ -1,12 +1,9 @@
 import React from 'react';
 import { Link } from '@tanstack/react-router';
+import { useAuth } from '../../hooks/useAuth';
 
-type Props = {
-    isAuthenticated: boolean;
-    onLogout: () => void;
-};
-
-const DesktopNav: React.FC<Props> = ({ isAuthenticated, onLogout }) => {
+const DesktopNav: React.FC = () => {
+    const { isAuthenticated, logout } = useAuth();
     return (
         <div className="hidden md:flex items-center space-x-3" data-testid="desktop-nav">
             {isAuthenticated ? (
@@ -18,7 +15,7 @@ const DesktopNav: React.FC<Props> = ({ isAuthenticated, onLogout }) => {
                         Search Wine
                     </Link>
                     <button
-                        onClick={onLogout}
+                        onClick={logout}
                         className="text-gray-600 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors duration-200"
                     >
                         Sign Out
