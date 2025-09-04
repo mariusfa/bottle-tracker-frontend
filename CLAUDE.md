@@ -69,6 +69,34 @@ export { MyComponent };
 - Use `@testing-library/user-event` for user interactions in tests
 - Only use `fireEvent` when testing form submission events that can't be triggered through user-event
 
+### Hook Mocking Pattern
+
+Mock custom hooks using this consistent pattern:
+
+```tsx
+// Mock the hook module
+vi.mock('./hooks/useMyHook', () => ({
+    useMyHook: vi.fn()
+}));
+
+// Import the hook
+import { useMyHook } from './hooks/useMyHook';
+
+// Create typed mock
+const mockUseMyHook = vi.mocked(useMyHook);
+
+// Use in tests
+beforeEach(() => {
+    mockUseMyHook.mockReturnValue({
+        data: mockData,
+        loading: false,
+        error: null
+    });
+});
+```
+
+Do NOT use star imports for hook mocking - use direct named imports instead.
+
 ## Development Workflow
 
 ### Component Development Process

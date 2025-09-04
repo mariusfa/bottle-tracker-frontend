@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HomePage } from './HomePage';
-import * as useAuthModule from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 // Mock TanStack Router Link component
 vi.mock('@tanstack/react-router', () => ({
@@ -26,7 +26,7 @@ vi.mock('../../hooks/useAuth', () => ({
     useAuth: vi.fn(),
 }));
 
-const mockUseAuth = vi.mocked(useAuthModule.useAuth);
+const mockUseAuth = vi.mocked(useAuth);
 
 describe('HomePage', () => {
     const mockLogout = vi.fn();
