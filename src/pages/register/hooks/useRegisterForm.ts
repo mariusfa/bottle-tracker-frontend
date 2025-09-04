@@ -22,6 +22,7 @@ export interface RegisterFormErrors {
 export interface UseRegisterFormReturn {
     formData: RegisterFormData;
     errors: RegisterFormErrors;
+    generalError?: string;
     isSubmitting: boolean;
     isSuccess: boolean;
     registeredUsername: string | null;
@@ -35,9 +36,10 @@ const useRegisterForm = (): UseRegisterFormReturn => {
     const [formData, setFormData] = useState<RegisterFormData>({
         name: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     });
     const [errors, setErrors] = useState<RegisterFormErrors>({});
+    const [generalError, setGeneralError] = useState<string | undefined>(undefined);
     const [isSuccess, setIsSuccess] = useState(false);
     const [registeredUsername, setRegisteredUsername] = useState<string | null>(null);
 
@@ -51,7 +53,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
             if (error.message === 'User already exists') {
                 setErrors({ name: 'A user with this name already exists' });
             } else {
-                alert(`Registration failed: ${error.message}`);
+                setGeneralError('A technical error occurred. Please try again.');
             }
         },
     });
@@ -59,10 +61,15 @@ const useRegisterForm = (): UseRegisterFormReturn => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
-        // Clear error when user starts typing
+
+        // Clear field error when user starts typing
         if (errors[name as keyof RegisterFormErrors]) {
             setErrors(prev => ({ ...prev, [name]: undefined }));
+        }
+
+        // Clear general error when user starts typing
+        if (generalError) {
+            setGeneralError(undefined);
         }
     };
 
@@ -96,14 +103,14 @@ const useRegisterForm = (): UseRegisterFormReturn => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
 
         const userData: RegisterUserRequest = {
             name: formData.name.trim(),
-            password: formData.password
+            password: formData.password,
         };
 
         registerMutation.mutate(userData);
@@ -112,6 +119,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
     const resetForm = () => {
         setFormData({ name: '', password: '', confirmPassword: '' });
         setErrors({});
+        setGeneralError(undefined);
         setIsSuccess(false);
         setRegisteredUsername(null);
     };
@@ -119,13 +127,14 @@ const useRegisterForm = (): UseRegisterFormReturn => {
     return {
         formData,
         errors,
+        generalError,
         isSubmitting: registerMutation.isPending,
         isSuccess,
         registeredUsername,
         handleInputChange,
         handleSubmit,
         validateForm,
-        resetForm
+        resetForm,
     };
 };
 

@@ -5,14 +5,20 @@ import { RegisterPage } from './RegisterPage';
 
 // Mock TanStack Router Link component
 vi.mock('@tanstack/react-router', () => ({
-    Link: ({ to, search, children }: { to: string; search?: { username?: string }; children: React.ReactNode }) => (
-        <a href={search?.username ? `${to}?username=${search.username}` : to}>{children}</a>
-    ),
+    Link: ({
+        to,
+        search,
+        children,
+    }: {
+        to: string;
+        search?: { username?: string };
+        children: React.ReactNode;
+    }) => <a href={search?.username ? `${to}?username=${search.username}` : to}>{children}</a>,
 }));
 
 // Mock the useRegisterForm hook for isolated component testing
 vi.mock('./hooks/useRegisterForm', () => ({
-    useRegisterForm: vi.fn()
+    useRegisterForm: vi.fn(),
 }));
 
 import { useRegisterForm } from './hooks/useRegisterForm';
@@ -28,13 +34,14 @@ describe('RegisterPage', () => {
     const defaultHookReturn = {
         formData: { name: '', password: '', confirmPassword: '' },
         errors: {},
+        generalError: undefined,
         isSubmitting: false,
         isSuccess: false,
         registeredUsername: null,
         handleInputChange: vi.fn(),
         handleSubmit: vi.fn(),
         validateForm: vi.fn(),
-        resetForm: vi.fn()
+        resetForm: vi.fn(),
     };
 
     it('renders registration form with all fields', () => {
@@ -50,7 +57,7 @@ describe('RegisterPage', () => {
     it('displays form values from hook', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            formData: { name: 'John Doe', password: 'password123', confirmPassword: 'password123' }
+            formData: { name: 'John Doe', password: 'password123', confirmPassword: 'password123' },
         };
         renderRegisterPage(hookReturn);
 
@@ -65,8 +72,8 @@ describe('RegisterPage', () => {
             errors: {
                 name: 'Name is required',
                 password: 'Password must be at least 6 characters',
-                confirmPassword: 'Passwords do not match'
-            }
+                confirmPassword: 'Passwords do not match',
+            },
         };
         renderRegisterPage(hookReturn);
 
@@ -80,7 +87,7 @@ describe('RegisterPage', () => {
         const handleInputChange = vi.fn();
         const hookReturn = {
             ...defaultHookReturn,
-            handleInputChange
+            handleInputChange,
         };
         renderRegisterPage(hookReturn);
 
@@ -88,18 +95,20 @@ describe('RegisterPage', () => {
         await user.type(nameInput, 'John');
 
         expect(handleInputChange).toHaveBeenCalledTimes(4); // One for each character
-        expect(handleInputChange).toHaveBeenCalledWith(expect.objectContaining({
-            target: expect.objectContaining({
-                name: 'name'
+        expect(handleInputChange).toHaveBeenCalledWith(
+            expect.objectContaining({
+                target: expect.objectContaining({
+                    name: 'name',
+                }),
             })
-        }));
+        );
     });
 
     it('calls handleSubmit when form is submitted', async () => {
         const handleSubmit = vi.fn();
         const hookReturn = {
             ...defaultHookReturn,
-            handleSubmit
+            handleSubmit,
         };
         renderRegisterPage(hookReturn);
 
@@ -107,15 +116,17 @@ describe('RegisterPage', () => {
         fireEvent.submit(form!);
 
         expect(handleSubmit).toHaveBeenCalledTimes(1);
-        expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
-            preventDefault: expect.any(Function)
-        }));
+        expect(handleSubmit).toHaveBeenCalledWith(
+            expect.objectContaining({
+                preventDefault: expect.any(Function),
+            })
+        );
     });
 
     it('shows loading state when submitting', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            isSubmitting: true
+            isSubmitting: true,
         };
         renderRegisterPage(hookReturn);
 
@@ -127,7 +138,7 @@ describe('RegisterPage', () => {
     it('applies error styling to fields with errors', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            errors: { name: 'Name is required' }
+            errors: { name: 'Name is required' },
         };
         renderRegisterPage(hookReturn);
 
@@ -147,11 +158,13 @@ describe('RegisterPage', () => {
         const hookReturn = {
             ...defaultHookReturn,
             isSuccess: true,
-            registeredUsername: 'John Doe'
+            registeredUsername: 'John Doe',
         };
         renderRegisterPage(hookReturn);
 
-        expect(screen.getByRole('heading', { name: /account created successfully!/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: /account created successfully!/i })
+        ).toBeInTheDocument();
         expect(screen.getByText(/welcome to bottle tracker, john doe!/i)).toBeInTheDocument();
         expect(screen.getByText(/your account has been created successfully/i)).toBeInTheDocument();
         expect(screen.getByRole('link', { name: /sign in now/i })).toBeInTheDocument();
@@ -162,7 +175,7 @@ describe('RegisterPage', () => {
         const hookReturn = {
             ...defaultHookReturn,
             isSuccess: true,
-            registeredUsername: 'John Doe'
+            registeredUsername: 'John Doe',
         };
         renderRegisterPage(hookReturn);
 
@@ -176,7 +189,7 @@ describe('RegisterPage', () => {
         const hookReturn = {
             ...defaultHookReturn,
             isSuccess: true,
-            registeredUsername: 'Alice Smith'
+            registeredUsername: 'Alice Smith',
         };
         renderRegisterPage(hookReturn);
 
@@ -187,7 +200,7 @@ describe('RegisterPage', () => {
         const hookReturn = {
             ...defaultHookReturn,
             isSuccess: true,
-            registeredUsername: 'John Doe'
+            registeredUsername: 'John Doe',
         };
         renderRegisterPage(hookReturn);
 
@@ -199,11 +212,34 @@ describe('RegisterPage', () => {
         const hookReturn = {
             ...defaultHookReturn,
             isSuccess: true,
-            registeredUsername: 'John Doe'
+            registeredUsername: 'John Doe',
         };
         renderRegisterPage(hookReturn);
 
         const homeLink = screen.getByRole('link', { name: /back to home/i });
         expect(homeLink).toHaveAttribute('href', '/');
+    });
+
+    it('displays general error when present', () => {
+        const hookReturn = {
+            ...defaultHookReturn,
+            generalError: 'A technical error occurred. Please try again.',
+        };
+        renderRegisterPage(hookReturn);
+
+        expect(
+            screen.getByText('A technical error occurred. Please try again.')
+        ).toBeInTheDocument();
+        expect(screen.getByText('A technical error occurred. Please try again.')).toHaveClass(
+            'bg-red-50',
+            'border-red-200',
+            'text-red-700'
+        );
+    });
+
+    it('does not display error UI when no general error', () => {
+        renderRegisterPage(defaultHookReturn);
+
+        expect(screen.queryByText(/technical error/i)).not.toBeInTheDocument();
     });
 });

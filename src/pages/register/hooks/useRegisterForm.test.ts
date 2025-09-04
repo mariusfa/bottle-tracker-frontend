@@ -11,7 +11,6 @@ vi.mock('../../../services/userApi', () => ({
 }));
 
 const mockRegisterUser = vi.mocked(userApi.registerUser);
-const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
 // Create a wrapper with QueryClient for testing
 const createWrapper = () => {
@@ -21,7 +20,7 @@ const createWrapper = () => {
             mutations: { retry: false },
         },
     });
-    
+
     return ({ children }: { children: React.ReactNode }) =>
         React.createElement(QueryClientProvider, { client: queryClient }, children);
 };
@@ -29,7 +28,6 @@ const createWrapper = () => {
 describe('useRegisterForm', () => {
     beforeEach(() => {
         mockRegisterUser.mockClear();
-        mockAlert.mockClear();
         vi.clearAllMocks();
     });
 
@@ -44,6 +42,7 @@ describe('useRegisterForm', () => {
             confirmPassword: '',
         });
         expect(result.current.errors).toEqual({});
+        expect(result.current.generalError).toBeUndefined();
         expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -85,11 +84,53 @@ describe('useRegisterForm', () => {
         expect(result.current.errors.name).toBeUndefined();
     });
 
+    it('clears general error when user starts typing', async () => {
+        const { result } = renderHook(() => useRegisterForm(), {
+            wrapper: createWrapper(),
+        });
+
+        // First, simulate a general error by triggering a failed submission
+        mockRegisterUser.mockRejectedValue(new Error('Network error'));
+
+        act(() => {
+            result.current.handleInputChange({
+                target: { name: 'name', value: 'John' },
+            } as React.ChangeEvent<HTMLInputElement>);
+            result.current.handleInputChange({
+                target: { name: 'password', value: 'pass123' },
+            } as React.ChangeEvent<HTMLInputElement>);
+            result.current.handleInputChange({
+                target: { name: 'confirmPassword', value: 'pass123' },
+            } as React.ChangeEvent<HTMLInputElement>);
+        });
+
+        await act(async () => {
+            const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+            await result.current.handleSubmit(mockEvent);
+        });
+
+        // Verify general error is set
+        expect(result.current.generalError).toBe('A technical error occurred. Please try again.');
+
+        // Now clear the mock and type in a field
+        mockRegisterUser.mockClear();
+
+        act(() => {
+            const mockEvent = {
+                target: { name: 'name', value: 'John Updated' },
+            } as React.ChangeEvent<HTMLInputElement>;
+            result.current.handleInputChange(mockEvent);
+        });
+
+        // General error should be cleared
+        expect(result.current.generalError).toBeUndefined();
+    });
+
     describe('validateForm', () => {
         it('validates required name field', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             let isValid: boolean = false;
             act(() => {
@@ -102,8 +143,8 @@ describe('useRegisterForm', () => {
 
         it('validates minimum name length', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 const mockEvent = {
@@ -123,8 +164,8 @@ describe('useRegisterForm', () => {
 
         it('trims whitespace from name validation', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 const mockEvent = {
@@ -144,8 +185,8 @@ describe('useRegisterForm', () => {
 
         it('validates required password field', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             let isValid: boolean = false;
             act(() => {
@@ -158,8 +199,8 @@ describe('useRegisterForm', () => {
 
         it('validates minimum password length', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 const mockEvent = {
@@ -179,8 +220,8 @@ describe('useRegisterForm', () => {
 
         it('validates password confirmation is required', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 // Set valid name and password
@@ -203,8 +244,8 @@ describe('useRegisterForm', () => {
 
         it('validates passwords match', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 result.current.handleInputChange({
@@ -229,8 +270,8 @@ describe('useRegisterForm', () => {
 
         it('returns true when all validation passes', () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             act(() => {
                 result.current.handleInputChange({
@@ -257,8 +298,8 @@ describe('useRegisterForm', () => {
     describe('handleSubmit', () => {
         it('prevents default and does not submit if validation fails', async () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
             const mockPreventDefault = vi.fn();
 
             await act(async () => {
@@ -275,8 +316,8 @@ describe('useRegisterForm', () => {
 
         it('submits form with valid data', async () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
             mockRegisterUser.mockResolvedValue();
 
@@ -337,14 +378,48 @@ describe('useRegisterForm', () => {
             });
 
             expect(result.current.errors.name).toBe('A user with this name already exists');
+            expect(result.current.generalError).toBeUndefined();
+        });
+
+        it('handles generic registration errors with generalError', async () => {
+            const { result } = renderHook(() => useRegisterForm(), {
+                wrapper: createWrapper(),
+            });
+
+            mockRegisterUser.mockRejectedValue(new Error('Network error'));
+
+            // Set up valid form data
+            act(() => {
+                result.current.handleInputChange({
+                    target: { name: 'name', value: 'John Doe' },
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'password', value: 'password123' },
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'confirmPassword', value: 'password123' },
+                } as React.ChangeEvent<HTMLInputElement>);
+            });
+
+            await act(async () => {
+                const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+                await result.current.handleSubmit(mockEvent);
+            });
+
+            expect(result.current.generalError).toBe(
+                'A technical error occurred. Please try again.'
+            );
+            expect(result.current.errors.name).toBeUndefined();
         });
 
         it('sets and resets isSubmitting state during submission', async () => {
             const { result } = renderHook(() => useRegisterForm(), {
-            wrapper: createWrapper(),
-        });
+                wrapper: createWrapper(),
+            });
 
-            mockRegisterUser.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+            mockRegisterUser.mockImplementation(
+                () => new Promise(resolve => setTimeout(resolve, 100))
+            );
 
             // Set up valid form data
             act(() => {
@@ -364,7 +439,7 @@ describe('useRegisterForm', () => {
 
             // Start the submission
             const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-            
+
             act(() => {
                 result.current.handleSubmit(mockEvent);
             });
@@ -388,19 +463,19 @@ describe('useRegisterForm', () => {
             // Set some form data and success state
             act(() => {
                 result.current.handleInputChange({
-                    target: { name: 'name', value: 'John Doe' }
+                    target: { name: 'name', value: 'John Doe' },
                 } as React.ChangeEvent<HTMLInputElement>);
                 result.current.handleInputChange({
-                    target: { name: 'password', value: 'password123' }
+                    target: { name: 'password', value: 'password123' },
                 } as React.ChangeEvent<HTMLInputElement>);
                 result.current.handleInputChange({
-                    target: { name: 'confirmPassword', value: 'password123' }
+                    target: { name: 'confirmPassword', value: 'password123' },
                 } as React.ChangeEvent<HTMLInputElement>);
             });
 
             // Mock successful registration (API returns void, not token)
             mockRegisterUser.mockResolvedValue(undefined);
-            
+
             await act(async () => {
                 const mockEvent = {
                     preventDefault: vi.fn(),
@@ -412,7 +487,7 @@ describe('useRegisterForm', () => {
             await act(async () => {
                 await vi.waitFor(() => expect(result.current.isSuccess).toBe(true));
             });
-            
+
             expect(result.current.registeredUsername).toBe('John Doe');
 
             // Reset form
@@ -423,7 +498,7 @@ describe('useRegisterForm', () => {
             expect(result.current.formData).toEqual({
                 name: '',
                 password: '',
-                confirmPassword: ''
+                confirmPassword: '',
             });
             expect(result.current.errors).toEqual({});
             expect(result.current.isSuccess).toBe(false);
@@ -431,4 +506,3 @@ describe('useRegisterForm', () => {
         });
     });
 });
-
