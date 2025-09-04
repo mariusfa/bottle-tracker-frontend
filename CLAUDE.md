@@ -66,7 +66,8 @@ export { MyComponent };
 
 - Test "leaf" components (minimal dependencies) rather than top-level components
 - Extract business logic into custom hooks for easier testing and mocking
-- Use `@testing-library/user-event` for keyboard interactions in tests
+- Use `@testing-library/user-event` for user interactions in tests
+- Only use `fireEvent` when testing form submission events that can't be triggered through user-event
 
 ## Development Workflow
 
