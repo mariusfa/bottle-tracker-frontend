@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from '@tanstack/react-router';
 
-interface DesktopNavProps {
+type Props = {
     isAuthenticated: boolean;
     onLogout: () => void;
-}
+};
 
-const DesktopNav: React.FC<DesktopNavProps> = ({ isAuthenticated, onLogout }) => {
+const DesktopNav: React.FC<Props> = ({ isAuthenticated, onLogout }) => {
     return (
         <div className="hidden md:flex items-center space-x-3" data-testid="desktop-nav">
             {isAuthenticated ? (

@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from '@tanstack/react-router';
 
-interface MobileNavProps {
+type Props = {
     isAuthenticated: boolean;
     onLogout: () => void;
-}
+};
 
-const MobileNav: React.FC<MobileNavProps> = ({ isAuthenticated, onLogout }) => {
+const MobileNav: React.FC<Props> = ({ isAuthenticated, onLogout }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const mobileMenuRef = useRef<HTMLDivElement>(null);
 

@@ -53,11 +53,16 @@ This is a React 19 + TypeScript web application for tracking wine bottles in fri
 - Define components as `React.FC<Props>` for type safety
 - Use arrow functions for all functions and methods
 - **Never use `export default`** - always use named exports
+- Use `type Props = ...` instead of named interfaces for component props
 
 Example:
 
 ```tsx
-const MyComponent: React.FC<{ name: string }> = ({ name }) => <div>Hello, {name}</div>;
+type Props = {
+    name: string;
+};
+
+const MyComponent: React.FC<Props> = ({ name }) => <div>Hello, {name}</div>;
 
 export { MyComponent };
 ```
