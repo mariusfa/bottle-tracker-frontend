@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { loginUser } from '../../../services/userApi';
 import { authService } from '../../../services/authService';
 
@@ -32,6 +33,7 @@ interface UseLoginFormProps {
 }
 
 const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLoginFormReturn => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<LoginFormData>({
         name: initialUsername,
         password: ''
@@ -42,8 +44,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
         mutationFn: loginUser,
         onSuccess: (response) => {
             authService.setToken(response.token);
-            alert('Login successful! You are now logged in.');
-            // TODO: Redirect to dashboard using React Router
+            navigate({ to: '/' });
         },
         onError: (error: Error) => {
             if (error.message.includes('500') || error.message.includes('failed')) {

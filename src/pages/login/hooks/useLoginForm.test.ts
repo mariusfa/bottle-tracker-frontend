@@ -5,6 +5,11 @@ import React from 'react';
 import { useLoginForm } from './useLoginForm';
 import * as userApi from '../../../services/userApi';
 
+// Mock TanStack Router navigation
+vi.mock('@tanstack/react-router', () => ({
+    useNavigate: vi.fn(),
+}));
+
 // Mock the userApi
 vi.mock('../../../services/userApi', () => ({
     loginUser: vi.fn(),
@@ -12,6 +17,11 @@ vi.mock('../../../services/userApi', () => ({
 
 const mockLoginUser = vi.mocked(userApi.loginUser);
 const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
+const mockNavigate = vi.fn();
+
+// Import after mocking
+import { useNavigate } from '@tanstack/react-router';
+const mockUseNavigate = vi.mocked(useNavigate);
 
 // Create a wrapper with QueryClient for testing
 const createWrapper = () => {
@@ -30,6 +40,8 @@ describe('useLoginForm', () => {
     beforeEach(() => {
         mockLoginUser.mockClear();
         mockAlert.mockClear();
+        mockNavigate.mockClear();
+        mockUseNavigate.mockReturnValue(mockNavigate);
         vi.clearAllMocks();
     });
 
@@ -209,7 +221,62 @@ describe('useLoginForm', () => {
                 name: 'John Doe', // Should be trimmed
                 password: 'password123',
             });
-            expect(mockAlert).toHaveBeenCalledWith('Login successful! You are now logged in.');
+            expect(mockAlert).not.toHaveBeenCalled();
+        });
+
+        it('navigates to home page on successful login', async () => {
+            const { result } = renderHook(() => useLoginForm(), {
+                wrapper: createWrapper(),
+            });
+
+            const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+            mockLoginUser.mockResolvedValue({ token: mockToken });
+
+            // Set up valid form data
+            act(() => {
+                result.current.handleInputChange({
+                    target: { name: 'name', value: 'John Doe' },
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'password', value: 'password123' },
+                } as React.ChangeEvent<HTMLInputElement>);
+            });
+
+            const mockPreventDefault = vi.fn();
+
+            await act(async () => {
+                const mockEvent = {
+                    preventDefault: mockPreventDefault,
+                } as unknown as React.FormEvent;
+                await result.current.handleSubmit(mockEvent);
+            });
+
+            expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
+        });
+
+        it('does not navigate on login failure', async () => {
+            const { result } = renderHook(() => useLoginForm(), {
+                wrapper: createWrapper(),
+            });
+
+            mockLoginUser.mockRejectedValue(new Error('Login failed: Internal Server Error'));
+
+            // Set up valid form data
+            act(() => {
+                result.current.handleInputChange({
+                    target: { name: 'name', value: 'John Doe' },
+                } as React.ChangeEvent<HTMLInputElement>);
+                result.current.handleInputChange({
+                    target: { name: 'password', value: 'wrongpassword' },
+                } as React.ChangeEvent<HTMLInputElement>);
+            });
+
+            await act(async () => {
+                const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+                await result.current.handleSubmit(mockEvent);
+            });
+
+            expect(mockNavigate).not.toHaveBeenCalled();
         });
 
         it('handles login failure with invalid credentials', async () => {
