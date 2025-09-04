@@ -1,11 +1,20 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HomePage } from './HomePage';
 import * as useAuthModule from '../../hooks/useAuth';
 
 // Mock TanStack Router Link component
 vi.mock('@tanstack/react-router', () => ({
-    Link: ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) => (
+    Link: ({
+        to,
+        children,
+        className,
+    }: {
+        to: string;
+        children: React.ReactNode;
+        className?: string;
+    }) => (
         <a href={to} className={className}>
             {children}
         </a>
@@ -68,11 +77,12 @@ describe('HomePage', () => {
         expect(screen.getByRole('button', { name: 'Sign Out' })).toBeInTheDocument();
     });
 
-    it('calls logout function when sign out button is clicked', () => {
+    it('calls logout function when sign out button is clicked', async () => {
+        const user = userEvent.setup();
         render(<HomePage />);
 
         const signOutButton = screen.getByRole('button', { name: 'Sign Out' });
-        fireEvent.click(signOutButton);
+        await user.click(signOutButton);
 
         expect(mockLogout).toHaveBeenCalledTimes(1);
     });
