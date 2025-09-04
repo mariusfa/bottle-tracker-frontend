@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { authService } from '../services/authService';
 import { validateUser } from '../services/userApi';
 
@@ -11,6 +12,7 @@ export interface UseAuthReturn {
 }
 
 export const useAuth = (): UseAuthReturn => {
+    const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const token = authService.getToken();
 
@@ -51,6 +53,7 @@ export const useAuth = (): UseAuthReturn => {
     const logout = () => {
         authService.logout();
         setIsAuthenticated(false);
+        navigate({ to: '/login' });
     };
 
     return {
