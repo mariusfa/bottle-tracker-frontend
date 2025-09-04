@@ -14,10 +14,10 @@ export interface UseAuthReturn {
 export const useAuth = (): UseAuthReturn => {
     const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const token = authService.getToken();
+    const [token, setToken] = useState<string | null>(authService.getToken());
 
     const { isLoading, error, isSuccess, isError } = useQuery({
-        queryKey: ['validateUser'],
+        queryKey: ['validateUser', token],
         queryFn: async () => {
             if (!token) {
                 throw new Error('No token found');
@@ -50,8 +50,28 @@ export const useAuth = (): UseAuthReturn => {
         }
     }, [token]);
 
+    useEffect(() => {
+        // Listen for storage changes to detect when token is added/removed
+        const handleStorageChange = () => {
+            const newToken = authService.getToken();
+            setToken(newToken);
+        };
+
+        // Listen for storage events (from other tabs)
+        window.addEventListener('storage', handleStorageChange);
+        
+        // Also check periodically for changes in the same tab
+        const interval = setInterval(handleStorageChange, 100);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            clearInterval(interval);
+        };
+    }, []);
+
     const logout = () => {
         authService.logout();
+        setToken(null);
         setIsAuthenticated(false);
         navigate({ to: '/login' });
     };
