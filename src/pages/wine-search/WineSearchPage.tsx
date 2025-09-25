@@ -120,9 +120,9 @@ const WineSearchPage: React.FC = () => {
                                             : `${searchResult.wines.length} Wines Found in Your Collection! 🍷`
                                         }
                                     </h3>
-                                    <div className="space-y-4">
+                                    <ul className="space-y-4">
                                         {searchResult.wines.map((wine, index) => (
-                                            <div key={wine.id} className="border border-green-300 rounded-lg p-4 bg-white">
+                                            <li key={wine.id} className="border border-green-300 rounded-lg p-4 bg-white">
                                                 {searchResult.wines.length > 1 && (
                                                     <h4 className="font-medium text-green-900 mb-2">
                                                         Wine {index + 1}
@@ -154,9 +154,9 @@ const WineSearchPage: React.FC = () => {
                                                         </p>
                                                     )}
                                                 </div>
-                                            </div>
+                                            </li>
                                         ))}
-                                    </div>
+                                    </ul>
                                 </div>
                             ) : (
                                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
