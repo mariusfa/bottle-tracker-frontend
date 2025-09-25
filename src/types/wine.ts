@@ -76,7 +76,7 @@ export interface WineFormErrors {
 
 // Search types
 export interface WineSearchResult {
-    wine?: GetWineDTO;
+    wines: GetWineDTO[];
     found: boolean;
     error?: string;
 }

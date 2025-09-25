@@ -16,26 +16,19 @@ const useWineSearch = (): UseWineSearchReturn => {
 
     const searchMutation = useMutation({
         mutationFn: searchWineByBarcode,
-        onSuccess: wine => {
+        onSuccess: wines => {
             setSearchResult({
-                wine,
-                found: true,
+                wines,
+                found: wines.length > 0,
             });
         },
         onError: (error: Error) => {
-            if (error.message === 'Wine not found in collection') {
-                // Wine not found in user's collection - this is expected behavior
-                setSearchResult({
-                    found: false,
-                });
-            } else {
-                // Actual error occurred
-                console.error('Wine search error:', error);
-                setSearchResult({
-                    found: false,
-                    error: error.message,
-                });
-            }
+            console.error('Wine search error:', error);
+            setSearchResult({
+                wines: [],
+                found: false,
+                error: error.message,
+            });
         },
     });
 

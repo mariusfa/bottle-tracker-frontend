@@ -3,7 +3,7 @@ import { authService } from './authService';
 import type { GetWineDTO, CreateWineDTO, UpdateWineDTO, ExternalWine } from '../types/wine';
 
 // Wine collection API calls (require authentication)
-export const searchWineByBarcode = async (barcode: string): Promise<GetWineDTO> => {
+export const searchWineByBarcode = async (barcode: string): Promise<GetWineDTO[]> => {
     const response = await fetch(buildApiUrl(`/wines/barcode/${encodeURIComponent(barcode)}`), {
         method: 'GET',
         headers: {
@@ -11,10 +11,6 @@ export const searchWineByBarcode = async (barcode: string): Promise<GetWineDTO> 
             Authorization: `Bearer ${authService.getToken()}`,
         },
     });
-
-    if (response.status === 404) {
-        throw new Error('Wine not found in collection');
-    }
 
     if (!response.ok) {
         throw new Error(`Wine search failed: ${response.statusText}`);

@@ -78,8 +78,8 @@ const WineSearchPage: React.FC = () => {
                         <h3 className="text-lg font-medium text-gray-900 mb-4">
                             Or enter barcode manually:
                         </h3>
-                        <form onSubmit={handleManualSearch} className="flex gap-4">
-                            <div className="flex-1">
+                        <form onSubmit={handleManualSearch} className="space-y-4">
+                            <div>
                                 <FormField
                                     label=""
                                     type="text"
@@ -89,9 +89,11 @@ const WineSearchPage: React.FC = () => {
                                     placeholder="Enter barcode number"
                                 />
                             </div>
-                            <Button type="submit" disabled={!manualBarcode.trim() || isSearching}>
-                                {isSearching ? 'Searching...' : 'Search'}
-                            </Button>
+                            <div>
+                                <Button type="submit" disabled={!manualBarcode.trim() || isSearching}>
+                                    {isSearching ? 'Searching...' : 'Search'}
+                                </Button>
+                            </div>
                         </form>
                     </div>
 
@@ -110,36 +112,50 @@ const WineSearchPage: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                            ) : searchResult.found && searchResult.wine ? (
+                            ) : searchResult.found && searchResult.wines.length > 0 ? (
                                 <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                                     <h3 className="text-lg font-semibold text-green-900 mb-4">
-                                        Wine Found in Your Collection! 🍷
+                                        {searchResult.wines.length === 1 
+                                            ? 'Wine Found in Your Collection! 🍷' 
+                                            : `${searchResult.wines.length} Wines Found in Your Collection! 🍷`
+                                        }
                                     </h3>
-                                    <div className="space-y-2 text-sm text-green-800">
-                                        <p>
-                                            <strong>Name:</strong> {searchResult.wine.name}
-                                        </p>
-                                        <p>
-                                            <strong>Country:</strong> {searchResult.wine.country}
-                                        </p>
-                                        <p>
-                                            <strong>Type:</strong> {searchResult.wine.type}
-                                        </p>
-                                        {searchResult.wine.vintage_year && (
-                                            <p>
-                                                <strong>Vintage:</strong>{' '}
-                                                {searchResult.wine.vintage_year}
-                                            </p>
-                                        )}
-                                        <p>
-                                            <strong>Rating:</strong> {searchResult.wine.rating}
-                                        </p>
-                                        {searchResult.wine.barcode && (
-                                            <p>
-                                                <strong>Barcode:</strong>{' '}
-                                                {searchResult.wine.barcode}
-                                            </p>
-                                        )}
+                                    <div className="space-y-4">
+                                        {searchResult.wines.map((wine, index) => (
+                                            <div key={wine.id} className="border border-green-300 rounded-lg p-4 bg-white">
+                                                {searchResult.wines.length > 1 && (
+                                                    <h4 className="font-medium text-green-900 mb-2">
+                                                        Wine {index + 1}
+                                                    </h4>
+                                                )}
+                                                <div className="space-y-2 text-sm text-green-800">
+                                                    <p>
+                                                        <strong>Name:</strong> {wine.name}
+                                                    </p>
+                                                    <p>
+                                                        <strong>Country:</strong> {wine.country}
+                                                    </p>
+                                                    <p>
+                                                        <strong>Type:</strong> {wine.type}
+                                                    </p>
+                                                    {wine.vintage_year && (
+                                                        <p>
+                                                            <strong>Vintage:</strong>{' '}
+                                                            {wine.vintage_year}
+                                                        </p>
+                                                    )}
+                                                    <p>
+                                                        <strong>Rating:</strong> {wine.rating}
+                                                    </p>
+                                                    {wine.barcode && (
+                                                        <p>
+                                                            <strong>Barcode:</strong>{' '}
+                                                            {wine.barcode}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             ) : (
