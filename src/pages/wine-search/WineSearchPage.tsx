@@ -154,6 +154,13 @@ const WineSearchPage: React.FC = () => {
                                                         </p>
                                                     )}
                                                 </div>
+                                                <div className="mt-4 pt-4 border-t border-green-200">
+                                                    <Link to="/wines/$id" params={{ id: wine.id }}>
+                                                        <Button variant="secondary">
+                                                            View Details
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </li>
                                         ))}
                                     </ul>
