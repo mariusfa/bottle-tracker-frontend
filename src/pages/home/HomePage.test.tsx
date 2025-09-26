@@ -48,27 +48,11 @@ describe('HomePage', () => {
         expect(screen.getByText('Welcome back to your wine collection')).toBeInTheDocument();
     });
 
-    it('renders collection stats', () => {
+    it('renders main action buttons', () => {
         render(<HomePage />);
 
-        expect(screen.getByText('My Collection')).toBeInTheDocument();
-        expect(screen.getByText('0')).toBeInTheDocument();
-        expect(screen.getByText('bottles tracked')).toBeInTheDocument();
-    });
-
-    it('renders recent activity section', () => {
-        render(<HomePage />);
-
-        expect(screen.getByText('Recent Activity')).toBeInTheDocument();
-        expect(screen.getByText('No recent activity')).toBeInTheDocument();
-    });
-
-    it('renders quick actions buttons', () => {
-        render(<HomePage />);
-
-        expect(screen.getByText('Quick Actions')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Search Wine' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'View Collection' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'View Wines' })).toBeInTheDocument();
     });
 
     it('renders sign out button', () => {
@@ -87,12 +71,12 @@ describe('HomePage', () => {
         expect(mockLogout).toHaveBeenCalledTimes(1);
     });
 
-    it('renders dashboard in a grid layout', () => {
+    it('renders simplified button layout', () => {
         render(<HomePage />);
 
-        // Check that all three main sections are present
-        expect(screen.getByText('My Collection')).toBeInTheDocument();
-        expect(screen.getByText('Recent Activity')).toBeInTheDocument();
-        expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+        // Check that all three main buttons are present
+        expect(screen.getByRole('button', { name: 'Search Wine' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'View Wines' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Sign Out' })).toBeInTheDocument();
     });
 });
