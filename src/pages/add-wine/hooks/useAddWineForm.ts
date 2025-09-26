@@ -14,6 +14,7 @@ export interface UseAddWineFormReturn {
     formData: WineFormData;
     errors: WineFormErrors;
     isSubmitting: boolean;
+    submitError: boolean;
     isLoadingExternal: boolean;
     externalWineResult: ExternalWineSearchResult | null;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -37,6 +38,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
     });
 
     const [errors, setErrors] = useState<WineFormErrors>({});
+    const [submitError, setSubmitError] = useState<boolean>(false);
     const [externalWineResult, setExternalWineResult] = useState<ExternalWineSearchResult | null>(
         null
     );
@@ -56,7 +58,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         },
         onError: (error: Error) => {
             console.error('Add wine error:', error);
-            alert(`Failed to add wine: ${error.message}`);
+            setSubmitError(true);
         },
     });
 
@@ -132,6 +134,9 @@ const useAddWineForm = (): UseAddWineFormReturn => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Reset submit error when trying again
+        setSubmitError(false);
+
         if (!validateForm()) {
             return;
         }
@@ -163,6 +168,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
             barcode: '',
         });
         setErrors({});
+        setSubmitError(false);
         setExternalWineResult(null);
     };
 
@@ -170,6 +176,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         formData,
         errors,
         isSubmitting: createWineMutation.isPending,
+        submitError,
         isLoadingExternal: externalWineMutation.isPending,
         externalWineResult,
         handleInputChange,

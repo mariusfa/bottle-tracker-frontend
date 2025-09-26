@@ -12,6 +12,7 @@ const AddWinePage: React.FC = () => {
         formData,
         errors,
         isSubmitting,
+        submitError,
         isLoadingExternal,
         externalWineResult,
         handleInputChange,
@@ -84,6 +85,14 @@ const AddWinePage: React.FC = () => {
                 )}
 
                 <div className="space-y-6">
+                    {submitError && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p className="text-red-800 text-sm">
+                                Failed to add wine. Please try again.
+                            </p>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <FormField
                             label="Name"
