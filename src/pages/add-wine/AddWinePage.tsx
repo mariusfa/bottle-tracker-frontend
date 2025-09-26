@@ -165,7 +165,6 @@ const AddWinePage: React.FC = () => {
                             value={formData.barcode}
                             onChange={handleInputChange}
                             placeholder="Enter barcode (optional)"
-                            readOnly={!!barcode}
                         />
 
                         <Button type="submit" loading={isSubmitting}>
