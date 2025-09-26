@@ -55,9 +55,6 @@ const WineDetailPage: React.FC = () => {
                 <div className="space-y-6">
                     {/* Wine Information */}
                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Wine Information
-                        </h3>
                         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <dt className="text-sm font-medium text-gray-500">Name</dt>

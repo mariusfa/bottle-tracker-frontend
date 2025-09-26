@@ -101,7 +101,6 @@ describe('WineDetailPage', () => {
 
         expect(screen.getByRole('heading', { name: 'Château Test 2020' })).toBeInTheDocument();
         expect(screen.getByText('Wine Details')).toBeInTheDocument();
-        expect(screen.getByText('Wine Information')).toBeInTheDocument();
     });
 
     it('displays all wine properties correctly', () => {
