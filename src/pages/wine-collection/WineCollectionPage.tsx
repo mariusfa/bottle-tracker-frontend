@@ -59,18 +59,18 @@ const WineCollectionPage: React.FC = () => {
                                                 {wine.name}
                                             </h3>
                                             
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                                                <div>
-                                                    <span className="font-medium text-gray-700">Type:</span>
-                                                    <span className="ml-2">{wine.type}</span>
+                                            <div className="space-y-2 text-sm">
+                                                <div className="flex">
+                                                    <span className="font-medium text-gray-700 w-16">Type:</span>
+                                                    <span>{wine.type}</span>
                                                 </div>
-                                                <div>
-                                                    <span className="font-medium text-gray-700">Year:</span>
-                                                    <span className="ml-2">{wine.vintage_year || 'N/A'}</span>
+                                                <div className="flex">
+                                                    <span className="font-medium text-gray-700 w-16">Year:</span>
+                                                    <span>{wine.vintage_year || 'N/A'}</span>
                                                 </div>
-                                                <div>
-                                                    <span className="font-medium text-gray-700">Country:</span>
-                                                    <span className="ml-2">{wine.country}</span>
+                                                <div className="flex">
+                                                    <span className="font-medium text-gray-700 w-16">Country:</span>
+                                                    <span>{wine.country}</span>
                                                 </div>
                                             </div>
 
