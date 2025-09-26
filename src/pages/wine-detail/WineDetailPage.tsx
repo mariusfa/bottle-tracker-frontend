@@ -94,12 +94,8 @@ const WineDetailPage: React.FC = () => {
 
                     {/* Actions */}
                     <div className="flex gap-4">
-                        <Link to="/wines/search">
-                            <Button variant="secondary">Back to Search</Button>
-                        </Link>
-                        <Link to="/">
-                            <Button variant="secondary">Back to Home</Button>
-                        </Link>
+                        <Button>Edit</Button>
+                        <Button variant="secondary">Delete</Button>
                     </div>
                 </div>
             </Card>

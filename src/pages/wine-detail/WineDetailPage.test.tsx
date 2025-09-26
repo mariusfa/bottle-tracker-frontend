@@ -166,7 +166,7 @@ describe('WineDetailPage', () => {
         expect(ratingBadge).toHaveClass('bg-green-100', 'text-green-800');
     });
 
-    it('shows navigation buttons', () => {
+    it('shows action buttons', () => {
         mockUseWineDetail.mockReturnValue({
             wine: mockWineData,
             isLoading: false,
@@ -175,8 +175,8 @@ describe('WineDetailPage', () => {
 
         render(<WineDetailPage />);
 
-        expect(screen.getByRole('link', { name: 'Back to Search' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Back to Home' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
     });
 
     it('calls useWineDetail with correct wine ID from params', () => {
