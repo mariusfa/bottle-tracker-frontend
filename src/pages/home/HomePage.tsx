@@ -20,7 +20,9 @@ const HomePage: React.FC = () => {
                     </Link>
                     
                     <div className="pt-4">
-                        <Button variant="secondary">View Wines</Button>
+                        <Link to="/wines">
+                            <Button variant="secondary">View Wines</Button>
+                        </Link>
                     </div>
                     
                     <Button variant="secondary" onClick={logout}>
