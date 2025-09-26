@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useSearch } from '@tanstack/react-router';
+import { useSearch, useNavigate } from '@tanstack/react-router';
 import type {
     WineFormData,
     WineFormErrors,
@@ -24,6 +24,7 @@ export interface UseAddWineFormReturn {
 
 const useAddWineForm = (): UseAddWineFormReturn => {
     const search = useSearch({ from: '/wines/add' });
+    const navigate = useNavigate();
     const initialBarcode = search.barcode || '';
 
     const [formData, setFormData] = useState<WineFormData>({
@@ -50,9 +51,8 @@ const useAddWineForm = (): UseAddWineFormReturn => {
     const createWineMutation = useMutation({
         mutationFn: createWine,
         onSuccess: () => {
-            alert('Wine added to your collection successfully!');
-            // TODO: Navigate to wine details or collection page
-            resetForm();
+            // Navigate to wine collection page to see the newly added wine
+            navigate({ to: '/wines' });
         },
         onError: (error: Error) => {
             console.error('Add wine error:', error);
