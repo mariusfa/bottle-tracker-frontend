@@ -111,7 +111,7 @@ const WineCollectionPage: React.FC = () => {
                                             <div className="mt-2">
                                                 <span className="font-medium text-gray-700">Rating:</span>
                                                 <span className="ml-2">
-                                                    <RatingBadge rating={wine.rating} variant="rounded" />
+                                                    <RatingBadge rating={wine.rating} />
                                                 </span>
                                             </div>
                                         )}

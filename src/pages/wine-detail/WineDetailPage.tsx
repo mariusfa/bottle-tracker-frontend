@@ -74,7 +74,7 @@ const WineDetailPage: React.FC = () => {
                             <div>
                                 <dt className="text-sm font-medium text-gray-500">Rating</dt>
                                 <dd className="text-sm text-gray-900">
-                                    <RatingBadge rating={wine.rating} variant="pill" />
+                                    <RatingBadge rating={wine.rating} />
                                 </dd>
                             </div>
                             {wine.vintage_year && (

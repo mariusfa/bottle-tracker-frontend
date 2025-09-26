@@ -3,7 +3,6 @@ import type { WineRating } from '../../types/wine';
 
 type Props = {
     rating: WineRating;
-    variant?: 'pill' | 'rounded';
 };
 
 const getRatingStyles = (rating: WineRating): string => {
@@ -21,17 +20,16 @@ const getRatingStyles = (rating: WineRating): string => {
     }
 };
 
-const RatingBadge: React.FC<Props> = ({ rating, variant = 'pill' }) => {
+const RatingBadge: React.FC<Props> = ({ rating }) => {
     if (rating === 'NONE') {
         return null;
     }
 
-    const baseClasses = 'inline-flex px-2 py-1 text-xs font-medium';
-    const variantClass = variant === 'pill' ? 'rounded-full' : 'rounded';
+    const baseClasses = 'inline-flex px-2 py-1 text-xs font-medium rounded';
     const colorClasses = getRatingStyles(rating);
 
     return (
-        <span className={`${baseClasses} ${variantClass} ${colorClasses}`}>
+        <span className={`${baseClasses} ${colorClasses}`}>
             {rating}
         </span>
     );

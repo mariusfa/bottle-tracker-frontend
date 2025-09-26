@@ -8,7 +8,7 @@ describe('RatingBadge', () => {
 
         const badge = screen.getByText('GOOD');
         expect(badge).toBeInTheDocument();
-        expect(badge).toHaveClass('bg-green-100', 'text-green-800', 'rounded-full');
+        expect(badge).toHaveClass('bg-green-100', 'text-green-800', 'rounded');
     });
 
     it('renders OK rating with yellow styling', () => {
@@ -16,7 +16,7 @@ describe('RatingBadge', () => {
 
         const badge = screen.getByText('OK');
         expect(badge).toBeInTheDocument();
-        expect(badge).toHaveClass('bg-yellow-100', 'text-yellow-800', 'rounded-full');
+        expect(badge).toHaveClass('bg-yellow-100', 'text-yellow-800', 'rounded');
     });
 
     it('renders BAD rating with red styling', () => {
@@ -24,7 +24,7 @@ describe('RatingBadge', () => {
 
         const badge = screen.getByText('BAD');
         expect(badge).toBeInTheDocument();
-        expect(badge).toHaveClass('bg-red-100', 'text-red-800', 'rounded-full');
+        expect(badge).toHaveClass('bg-red-100', 'text-red-800', 'rounded');
     });
 
     it('does not render when rating is NONE', () => {
@@ -33,20 +33,11 @@ describe('RatingBadge', () => {
         expect(screen.queryByText('NONE')).not.toBeInTheDocument();
     });
 
-    it('uses pill variant by default', () => {
+    it('uses rounded styling', () => {
         render(<RatingBadge rating="GOOD" />);
 
         const badge = screen.getByText('GOOD');
-        expect(badge).toHaveClass('rounded-full');
-        expect(badge).not.toHaveClass('rounded');
-    });
-
-    it('uses rounded variant when specified', () => {
-        render(<RatingBadge rating="GOOD" variant="rounded" />);
-
-        const badge = screen.getByText('GOOD');
         expect(badge).toHaveClass('rounded');
-        expect(badge).not.toHaveClass('rounded-full');
     });
 
     it('applies base classes to all ratings', () => {
