@@ -4,13 +4,9 @@ import { Card } from '../../components/card/Card';
 import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
 import { Button } from '../../components/button/Button';
+import { RatingBadge } from '../../components/rating-badge/RatingBadge';
 import { useWineCollection } from './hooks/useWineCollection';
 
-const getRatingStyles = (rating: string) => {
-    if (rating === 'GOOD') return 'bg-green-100 text-green-800';
-    if (rating === 'OK') return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
-};
 
 const WineCollectionPage: React.FC = () => {
     const { wines, isLoading, error } = useWineCollection();
@@ -114,8 +110,8 @@ const WineCollectionPage: React.FC = () => {
                                         {wine.rating && wine.rating !== 'NONE' && (
                                             <div className="mt-2">
                                                 <span className="font-medium text-gray-700">Rating:</span>
-                                                <span className={`ml-2 inline-block px-2 py-1 rounded text-xs font-medium ${getRatingStyles(wine.rating)}`}>
-                                                    {wine.rating}
+                                                <span className="ml-2">
+                                                    <RatingBadge rating={wine.rating} variant="rounded" />
                                                 </span>
                                             </div>
                                         )}

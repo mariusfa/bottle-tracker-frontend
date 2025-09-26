@@ -4,6 +4,7 @@ import { Card } from '../../components/card/Card';
 import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
 import { Button } from '../../components/button/Button';
+import { RatingBadge } from '../../components/rating-badge/RatingBadge';
 import { useWineDetail } from './hooks/useWineDetail';
 
 const WineDetailPage: React.FC = () => {
@@ -73,17 +74,7 @@ const WineDetailPage: React.FC = () => {
                             <div>
                                 <dt className="text-sm font-medium text-gray-500">Rating</dt>
                                 <dd className="text-sm text-gray-900">
-                                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                                        wine.rating === 'GOOD' 
-                                            ? 'bg-green-100 text-green-800'
-                                            : wine.rating === 'OK'
-                                            ? 'bg-yellow-100 text-yellow-800'
-                                            : wine.rating === 'BAD'
-                                            ? 'bg-red-100 text-red-800'
-                                            : 'bg-gray-100 text-gray-800'
-                                    }`}>
-                                        {wine.rating}
-                                    </span>
+                                    <RatingBadge rating={wine.rating} variant="pill" />
                                 </dd>
                             </div>
                             {wine.vintage_year && (

@@ -197,7 +197,6 @@ describe('WineDetailPage', () => {
             { rating: 'GOOD' as const, expectedClasses: ['bg-green-100', 'text-green-800'] },
             { rating: 'OK' as const, expectedClasses: ['bg-yellow-100', 'text-yellow-800'] },
             { rating: 'BAD' as const, expectedClasses: ['bg-red-100', 'text-red-800'] },
-            { rating: 'NONE' as const, expectedClasses: ['bg-gray-100', 'text-gray-800'] },
         ];
 
         testCases.forEach(({ rating, expectedClasses }) => {
@@ -221,6 +220,23 @@ describe('WineDetailPage', () => {
 
             unmount();
         });
+    });
+
+    it('does not display rating when rating is NONE', () => {
+        const wineWithNoneRating: GetWineDTO = {
+            ...mockWineData,
+            rating: 'NONE',
+        };
+
+        mockUseWineDetail.mockReturnValue({
+            wine: wineWithNoneRating,
+            isLoading: false,
+            error: null,
+        });
+
+        render(<WineDetailPage />);
+
+        expect(screen.queryByText('NONE')).not.toBeInTheDocument();
     });
 
     it('displays vintage year when available', () => {
