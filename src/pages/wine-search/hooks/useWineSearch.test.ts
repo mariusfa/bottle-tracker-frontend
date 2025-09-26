@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
@@ -72,7 +72,9 @@ describe('useWineSearch', () => {
             wrapper: createWrapper(),
         });
 
-        await result.current.searchByBarcode('1234567890');
+        await act(async () => {
+            await result.current.searchByBarcode('1234567890');
+        });
 
         await waitFor(() => {
             expect(result.current.isSearching).toBe(false);
@@ -93,7 +95,9 @@ describe('useWineSearch', () => {
             wrapper: createWrapper(),
         });
 
-        await result.current.searchByBarcode('1234567890');
+        await act(async () => {
+            await result.current.searchByBarcode('1234567890');
+        });
 
         await waitFor(() => {
             expect(result.current.searchResult).toEqual({
@@ -110,7 +114,9 @@ describe('useWineSearch', () => {
             wrapper: createWrapper(),
         });
 
-        await result.current.searchByBarcode('9999999999');
+        await act(async () => {
+            await result.current.searchByBarcode('9999999999');
+        });
 
         await waitFor(() => {
             expect(result.current.searchResult).toEqual({
@@ -142,7 +148,9 @@ describe('useWineSearch', () => {
         });
 
         // First search
-        await result.current.searchByBarcode('1234567890');
+        await act(async () => {
+            await result.current.searchByBarcode('1234567890');
+        });
         
         await waitFor(() => {
             expect(result.current.searchResult?.found).toBe(true);
@@ -150,7 +158,9 @@ describe('useWineSearch', () => {
 
         // Start second search - should clear previous result
         mockSearchWineByBarcode.mockResolvedValueOnce([]);
-        await result.current.searchByBarcode('9999999999');
+        await act(async () => {
+            await result.current.searchByBarcode('9999999999');
+        });
 
         await waitFor(() => {
             expect(result.current.searchResult).toEqual({

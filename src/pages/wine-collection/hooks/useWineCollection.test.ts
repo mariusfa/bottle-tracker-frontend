@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { useWineCollection } from './useWineCollection';
@@ -56,7 +56,7 @@ describe('useWineCollection', () => {
             wrapper: createWrapper(),
         });
 
-        await vi.waitFor(() => {
+        await waitFor(() => {
             expect(result.current.wines).toEqual(mockWines);
         });
 
@@ -70,7 +70,7 @@ describe('useWineCollection', () => {
             wrapper: createWrapper(),
         });
 
-        await vi.waitFor(() => {
+        await waitFor(() => {
             expect(result.current.wines).toEqual([]);
         });
 
@@ -84,7 +84,7 @@ describe('useWineCollection', () => {
             wrapper: createWrapper(),
         });
 
-        await vi.waitFor(() => {
+        await waitFor(() => {
             expect(mockGetAllUserWines).toHaveBeenCalledTimes(1);
         });
     });
