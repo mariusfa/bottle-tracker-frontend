@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
 
                 <div className="space-y-4">
                     <Link to="/wines/search">
-                        <Button>Search Wine</Button>
+                        <Button>Search by Barcode</Button>
                     </Link>
                     
                     <div className="pt-4">

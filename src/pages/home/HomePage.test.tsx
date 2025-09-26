@@ -51,7 +51,7 @@ describe('HomePage', () => {
     it('renders main action buttons', () => {
         render(<HomePage />);
 
-        expect(screen.getByRole('button', { name: 'Search Wine' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Search by Barcode' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'View Wines' })).toBeInTheDocument();
     });
 
@@ -75,7 +75,7 @@ describe('HomePage', () => {
         render(<HomePage />);
 
         // Check that all three main buttons are present
-        expect(screen.getByRole('button', { name: 'Search Wine' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Search by Barcode' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'View Wines' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Sign Out' })).toBeInTheDocument();
     });
