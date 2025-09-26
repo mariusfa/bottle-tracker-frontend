@@ -117,12 +117,11 @@ const useAddWineForm = (): UseAddWineFormReturn => {
             newErrors.type = 'Wine type is required';
         }
 
-        // Vintage year validation (optional but must be valid if provided)
+        // Vintage year validation (optional but must be 4 digits if provided)
         if (formData.vintageYear) {
-            const year = parseInt(formData.vintageYear, 10);
-            const currentYear = new Date().getFullYear();
-            if (isNaN(year) || year < 1800 || year > currentYear + 5) {
-                newErrors.vintageYear = `Vintage year must be between 1800 and ${currentYear + 5}`;
+            const yearString = formData.vintageYear.toString();
+            if (!/^\d{4}$/.test(yearString)) {
+                newErrors.vintageYear = 'Vintage year must be exactly 4 digits';
             }
         }
 
