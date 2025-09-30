@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WinesIndexRouteImport } from './routes/wines/index'
 import { Route as WinesSearchRouteImport } from './routes/wines/search'
 import { Route as WinesAddRouteImport } from './routes/wines/add'
 import { Route as WinesIdRouteImport } from './routes/wines/$id'
@@ -29,6 +30,11 @@ const LoginRoute = LoginRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WinesIndexRoute = WinesIndexRouteImport.update({
+  id: '/wines/',
+  path: '/wines/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WinesSearchRoute = WinesSearchRouteImport.update({
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/wines/$id': typeof WinesIdRoute
   '/wines/add': typeof WinesAddRoute
   '/wines/search': typeof WinesSearchRoute
+  '/wines': typeof WinesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/wines/$id': typeof WinesIdRoute
   '/wines/add': typeof WinesAddRoute
   '/wines/search': typeof WinesSearchRoute
+  '/wines': typeof WinesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/wines/$id': typeof WinesIdRoute
   '/wines/add': typeof WinesAddRoute
   '/wines/search': typeof WinesSearchRoute
+  '/wines/': typeof WinesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/wines/$id'
     | '/wines/add'
     | '/wines/search'
+    | '/wines'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/wines/$id'
     | '/wines/add'
     | '/wines/search'
+    | '/wines'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/wines/$id'
     | '/wines/add'
     | '/wines/search'
+    | '/wines/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   WinesIdRoute: typeof WinesIdRoute
   WinesAddRoute: typeof WinesAddRoute
   WinesSearchRoute: typeof WinesSearchRoute
+  WinesIndexRoute: typeof WinesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wines/': {
+      id: '/wines/'
+      path: '/wines'
+      fullPath: '/wines'
+      preLoaderRoute: typeof WinesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wines/search': {
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   WinesIdRoute: WinesIdRoute,
   WinesAddRoute: WinesAddRoute,
   WinesSearchRoute: WinesSearchRoute,
+  WinesIndexRoute: WinesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

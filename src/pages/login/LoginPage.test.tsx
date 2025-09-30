@@ -6,6 +6,11 @@ import { LoginPage } from './LoginPage';
 // Mock TanStack Router hooks
 vi.mock('@tanstack/react-router', () => ({
     useSearch: vi.fn(),
+    Link: ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) => (
+        <a href={to} className={className}>
+            {children}
+        </a>
+    ),
 }));
 
 // Mock the useLoginForm hook for isolated component testing

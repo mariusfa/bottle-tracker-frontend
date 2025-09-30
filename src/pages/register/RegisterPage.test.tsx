@@ -9,11 +9,17 @@ vi.mock('@tanstack/react-router', () => ({
         to,
         search,
         children,
+        className,
     }: {
         to: string;
         search?: { username?: string };
         children: React.ReactNode;
-    }) => <a href={search?.username ? `${to}?username=${search.username}` : to}>{children}</a>,
+        className?: string;
+    }) => (
+        <a href={search?.username ? `${to}?username=${search.username}` : to} className={className}>
+            {children}
+        </a>
+    ),
 }));
 
 // Mock the useRegisterForm hook for isolated component testing

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSearch } from '@tanstack/react-router';
+import { useSearch, Link } from '@tanstack/react-router';
 import { useLoginForm } from './hooks/useLoginForm';
 import { FormField } from '../../components/form-field/FormField';
 import { Button } from '../../components/button/Button';
@@ -57,12 +57,12 @@ const LoginPage: React.FC = () => {
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-600">
                         Don't have an account?{' '}
-                        <a
-                            href="/register"
+                        <Link
+                            to="/register"
                             className="text-blue-600 hover:text-blue-700 font-medium"
                         >
                             Create one here
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </Card>
