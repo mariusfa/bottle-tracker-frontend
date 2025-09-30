@@ -1,9 +1,6 @@
 # TODO
 
-Cleanup tasks:
+## Cleanup tasks
 
-- Link replace a href. login and register. maybe other places too.
-- GeneralError component extraction. Hardcoded error text and use boolean generalError values to determine show error or not
-- header.tsx or subcomponents. Wrap logic in custom hooks and write tests for them.
-- Add wine tests
-- Search wine tests
+- Link replace `<a href>` with `<Link>` in login and register pages
+- GeneralError component extraction. Hardcoded error text - use reusable component instead of inline div with boolean generalError values
