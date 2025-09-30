@@ -301,11 +301,11 @@ describe('useAddWineForm', () => {
             });
             const mockPreventDefault = vi.fn();
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = {
                     preventDefault: mockPreventDefault,
                 } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
             expect(mockPreventDefault).toHaveBeenCalled();
@@ -341,21 +341,24 @@ describe('useAddWineForm', () => {
 
             const mockPreventDefault = vi.fn();
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = {
                     preventDefault: mockPreventDefault,
                 } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
+            });
+
+            await waitFor(() => {
+                expect(mockCreateWine).toHaveBeenCalledWith({
+                    name: 'Bordeaux Rouge', // Should be trimmed
+                    country: 'France', // Should be trimmed
+                    type: WineType.RED,
+                    rating: WineRating.GOOD,
+                    barcode: '123456789', // Should be trimmed
+                });
             });
 
             expect(mockPreventDefault).toHaveBeenCalled();
-            expect(mockCreateWine).toHaveBeenCalledWith({
-                name: 'Bordeaux Rouge', // Should be trimmed
-                country: 'France', // Should be trimmed
-                type: WineType.RED,
-                rating: WineRating.GOOD,
-                barcode: '123456789', // Should be trimmed
-            });
             expect(result.current.submitError).toBe(false);
         });
 
@@ -382,18 +385,20 @@ describe('useAddWineForm', () => {
                 } as React.ChangeEvent<HTMLInputElement>);
             });
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
-            expect(mockCreateWine).toHaveBeenCalledWith({
-                name: 'Bordeaux Rouge',
-                country: 'France',
-                type: WineType.RED,
-                rating: WineRating.NONE,
-                vintage_year: 2020,
-                barcode: undefined, // Empty barcode should be undefined
+            await waitFor(() => {
+                expect(mockCreateWine).toHaveBeenCalledWith({
+                    name: 'Bordeaux Rouge',
+                    country: 'France',
+                    type: WineType.RED,
+                    rating: WineRating.NONE,
+                    vintage_year: 2020,
+                    barcode: undefined, // Empty barcode should be undefined
+                });
             });
         });
 
@@ -417,12 +422,14 @@ describe('useAddWineForm', () => {
                 } as React.ChangeEvent<HTMLSelectElement>);
             });
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
-            expect(mockNavigate).toHaveBeenCalledWith({ to: '/wines' });
+            await waitFor(() => {
+                expect(mockNavigate).toHaveBeenCalledWith({ to: '/wines' });
+            });
         });
 
         it('does not navigate on submission failure', async () => {
@@ -445,9 +452,9 @@ describe('useAddWineForm', () => {
                 } as React.ChangeEvent<HTMLSelectElement>);
             });
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
             await waitFor(() => {
@@ -477,9 +484,9 @@ describe('useAddWineForm', () => {
                 } as React.ChangeEvent<HTMLSelectElement>);
             });
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
             await waitFor(() => {
@@ -507,9 +514,9 @@ describe('useAddWineForm', () => {
                 } as React.ChangeEvent<HTMLSelectElement>);
             });
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
             await waitFor(() => {
@@ -520,9 +527,9 @@ describe('useAddWineForm', () => {
             mockCreateWine.mockClear();
             mockCreateWine.mockResolvedValueOnce();
 
-            await act(async () => {
+            act(() => {
                 const mockEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
-                await result.current.handleSubmit(mockEvent);
+                result.current.handleSubmit(mockEvent);
             });
 
             await waitFor(() => {

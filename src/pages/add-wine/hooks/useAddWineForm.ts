@@ -18,7 +18,7 @@ export interface UseAddWineFormReturn {
     isLoadingExternal: boolean;
     externalWineResult: ExternalWineSearchResult | null;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    handleSubmit: (e: React.FormEvent) => Promise<void>;
+    handleSubmit: (e: React.FormEvent) => void;
     validateForm: () => boolean;
     resetForm: () => void;
 }
@@ -86,13 +86,9 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         },
     });
 
-    const fetchExternalWineData = async (barcode: string) => {
+    const fetchExternalWineData = (barcode: string) => {
         if (barcode.trim()) {
-            try {
-                await externalWineMutation.mutateAsync(barcode);
-            } catch {
-                // Error handled by mutation's onError
-            }
+            externalWineMutation.mutate(barcode);
         }
     };
 
@@ -134,7 +130,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         // Reset submit error when trying again
@@ -158,11 +154,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
             wineData.vintage_year = parseInt(formData.vintageYear, 10);
         }
 
-        try {
-            await createWineMutation.mutateAsync(wineData);
-        } catch {
-            // Error handled by mutation's onError
-        }
+        createWineMutation.mutate(wineData);
     };
 
     const resetForm = () => {

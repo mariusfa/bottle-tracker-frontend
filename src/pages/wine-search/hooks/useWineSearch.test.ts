@@ -72,8 +72,8 @@ describe('useWineSearch', () => {
             wrapper: createWrapper(),
         });
 
-        await act(async () => {
-            await result.current.searchByBarcode('1234567890');
+        act(() => {
+            result.current.searchByBarcode('1234567890');
         });
 
         await waitFor(() => {
@@ -95,8 +95,8 @@ describe('useWineSearch', () => {
             wrapper: createWrapper(),
         });
 
-        await act(async () => {
-            await result.current.searchByBarcode('1234567890');
+        act(() => {
+            result.current.searchByBarcode('1234567890');
         });
 
         await waitFor(() => {
@@ -114,8 +114,8 @@ describe('useWineSearch', () => {
             wrapper: createWrapper(),
         });
 
-        await act(async () => {
-            await result.current.searchByBarcode('9999999999');
+        act(() => {
+            result.current.searchByBarcode('9999999999');
         });
 
         await waitFor(() => {
@@ -148,8 +148,8 @@ describe('useWineSearch', () => {
         });
 
         // First search
-        await act(async () => {
-            await result.current.searchByBarcode('1234567890');
+        act(() => {
+            result.current.searchByBarcode('1234567890');
         });
         
         await waitFor(() => {
@@ -158,8 +158,8 @@ describe('useWineSearch', () => {
 
         // Start second search - should clear previous result
         mockSearchWineByBarcode.mockResolvedValueOnce([]);
-        await act(async () => {
-            await result.current.searchByBarcode('9999999999');
+        act(() => {
+            result.current.searchByBarcode('9999999999');
         });
 
         await waitFor(() => {

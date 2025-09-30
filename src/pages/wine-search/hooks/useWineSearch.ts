@@ -6,7 +6,7 @@ import { searchWineByBarcode } from '../../../services/wineApi';
 export interface UseWineSearchReturn {
     searchResult: WineSearchResult | null;
     isSearching: boolean;
-    searchByBarcode: (barcode: string) => Promise<void>;
+    searchByBarcode: (barcode: string) => void;
     clearSearch: () => void;
     error?: string;
 }
@@ -23,7 +23,6 @@ const useWineSearch = (): UseWineSearchReturn => {
             });
         },
         onError: (error: Error) => {
-            console.error('Wine search error:', error);
             setSearchResult({
                 wines: [],
                 found: false,
@@ -32,9 +31,9 @@ const useWineSearch = (): UseWineSearchReturn => {
         },
     });
 
-    const searchByBarcode = async (barcode: string): Promise<void> => {
+    const searchByBarcode = (barcode: string): void => {
         setSearchResult(null);
-        await searchMutation.mutateAsync(barcode);
+        searchMutation.mutate(barcode);
     };
 
     const clearSearch = () => {
