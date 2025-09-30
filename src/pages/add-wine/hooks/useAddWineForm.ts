@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import type {
@@ -43,14 +43,6 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         null
     );
 
-    // Auto-fetch external wine data when barcode is present
-    useEffect(() => {
-        if (initialBarcode && !externalWineResult) {
-            fetchExternalWineData(initialBarcode);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialBarcode]);
-
     const createWineMutation = useMutation({
         mutationFn: createWine,
         onSuccess: () => {
@@ -86,11 +78,18 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         },
     });
 
-    const fetchExternalWineData = (barcode: string) => {
+    const fetchExternalWineData = useCallback((barcode: string) => {
         if (barcode.trim()) {
             externalWineMutation.mutate(barcode);
         }
-    };
+    }, [externalWineMutation]);
+
+    // Auto-fetch external wine data when barcode is present
+    useEffect(() => {
+        if (initialBarcode && !externalWineResult) {
+            fetchExternalWineData(initialBarcode);
+        }
+    }, [initialBarcode, externalWineResult, fetchExternalWineData]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
