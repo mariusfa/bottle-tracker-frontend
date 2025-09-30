@@ -117,10 +117,11 @@ const AddWinePage: React.FC = () => {
                         />
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
                                 Type *
                             </label>
                             <select
+                                id="type"
                                 name="type"
                                 value={formData.type}
                                 onChange={handleInputChange}
@@ -151,10 +152,11 @@ const AddWinePage: React.FC = () => {
                         />
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="rating" className="block text-sm font-medium text-gray-700 mb-2">
                                 Rating
                             </label>
                             <select
+                                id="rating"
                                 name="rating"
                                 value={formData.rating}
                                 onChange={handleInputChange}

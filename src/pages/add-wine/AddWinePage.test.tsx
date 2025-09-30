@@ -50,11 +50,9 @@ describe('AddWinePage', () => {
         expect(screen.getByRole('heading', { name: /add new wine/i })).toBeInTheDocument();
         expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/country/i)).toBeInTheDocument();
-        const typeSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'type');
-        expect(typeSelect).toBeInTheDocument();
+        expect(screen.getByLabelText(/type/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/vintage year/i)).toBeInTheDocument();
-        const ratingSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'rating');
-        expect(ratingSelect).toBeInTheDocument();
+        expect(screen.getByLabelText(/rating/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/barcode/i)).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /add wine/i })).toBeInTheDocument();
     });
@@ -76,11 +74,8 @@ describe('AddWinePage', () => {
         expect(screen.getByDisplayValue('Bordeaux 2020')).toBeInTheDocument();
         expect(screen.getByDisplayValue('France')).toBeInTheDocument();
         expect(screen.getByDisplayValue('2020')).toBeInTheDocument();
-        const typeSelects = screen.getAllByRole('combobox');
-        const typeSelect = typeSelects.find(select => select.getAttribute('name') === 'type');
-        expect(typeSelect).toHaveValue(WineType.RED);
-        const ratingSelect = typeSelects.find(select => select.getAttribute('name') === 'rating');
-        expect(ratingSelect).toHaveValue(WineRating.GOOD);
+        expect(screen.getByLabelText(/type/i)).toHaveValue(WineType.RED);
+        expect(screen.getByLabelText(/rating/i)).toHaveValue(WineRating.GOOD);
         expect(screen.getByDisplayValue('123456789')).toBeInTheDocument();
     });
 
@@ -133,14 +128,13 @@ describe('AddWinePage', () => {
         };
         renderAddWinePage(hookReturn);
 
-        const typeSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'type');
-        await user.selectOptions(typeSelect!, WineType.RED);
+        const typeSelect = screen.getByLabelText(/type/i);
+        await user.selectOptions(typeSelect, WineType.RED);
 
         expect(handleInputChange).toHaveBeenCalled();
         const calls = handleInputChange.mock.calls;
         const lastCall = calls[calls.length - 1][0];
         expect(lastCall.target.name).toBe('type');
-        // Just check that the function was called with the right element
         expect(lastCall.target).toBe(typeSelect);
     });
 
@@ -153,14 +147,13 @@ describe('AddWinePage', () => {
         };
         renderAddWinePage(hookReturn);
 
-        const ratingSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'rating');
-        await user.selectOptions(ratingSelect!, WineRating.GOOD);
+        const ratingSelect = screen.getByLabelText(/rating/i);
+        await user.selectOptions(ratingSelect, WineRating.GOOD);
 
         expect(handleInputChange).toHaveBeenCalled();
         const calls = handleInputChange.mock.calls;
         const lastCall = calls[calls.length - 1][0];
         expect(lastCall.target.name).toBe('rating');
-        // Just check that the function was called with the right element
         expect(lastCall.target).toBe(ratingSelect);
     });
 
@@ -202,7 +195,7 @@ describe('AddWinePage', () => {
         renderAddWinePage(hookReturn);
 
         const nameInput = screen.getByLabelText(/name/i);
-        const typeSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'type');
+        const typeSelect = screen.getByLabelText(/type/i);
 
         expect(nameInput).toHaveClass('border-red-500');
         expect(typeSelect).toHaveClass('border-red-500');
@@ -212,7 +205,7 @@ describe('AddWinePage', () => {
         renderAddWinePage(defaultHookReturn);
 
         const nameInput = screen.getByLabelText(/name/i);
-        const typeSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'type');
+        const typeSelect = screen.getByLabelText(/type/i);
 
         expect(nameInput).toHaveClass('border-gray-300');
         expect(nameInput).not.toHaveClass('border-red-500');
@@ -309,7 +302,7 @@ describe('AddWinePage', () => {
     it('renders all wine type options', () => {
         renderAddWinePage(defaultHookReturn);
 
-        const typeSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'type');
+        const typeSelect = screen.getByLabelText(/type/i);
 
         expect(typeSelect).toContainHTML('<option value="">Select wine type</option>');
         expect(typeSelect).toContainHTML(`<option value="${WineType.RED}">Red Wine</option>`);
@@ -321,7 +314,7 @@ describe('AddWinePage', () => {
     it('renders all wine rating options', () => {
         renderAddWinePage(defaultHookReturn);
 
-        const ratingSelect = screen.getAllByRole('combobox').find(select => select.getAttribute('name') === 'rating');
+        const ratingSelect = screen.getByLabelText(/rating/i);
 
         expect(ratingSelect).toContainHTML(`<option value="${WineRating.NONE}">No Rating</option>`);
         expect(ratingSelect).toContainHTML(`<option value="${WineRating.GOOD}">Good</option>`);
