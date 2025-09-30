@@ -40,7 +40,7 @@ describe('RegisterPage', () => {
     const defaultHookReturn = {
         formData: { name: '', password: '', confirmPassword: '' },
         errors: {},
-        generalError: undefined,
+        generalError: false,
         isSubmitting: false,
         isSuccess: false,
         registeredUsername: null,
@@ -229,7 +229,7 @@ describe('RegisterPage', () => {
     it('displays general error when present', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            generalError: 'A technical error occurred. Please try again.',
+            generalError: true,
         };
         renderRegisterPage(hookReturn);
 

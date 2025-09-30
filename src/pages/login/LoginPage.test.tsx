@@ -34,7 +34,7 @@ describe('LoginPage', () => {
     const defaultHookReturn = {
         formData: { name: '', password: '' },
         errors: {},
-        generalError: undefined,
+        generalError: false,
         isSubmitting: false,
         handleInputChange: vi.fn(),
         handleSubmit: vi.fn(),
@@ -164,7 +164,7 @@ describe('LoginPage', () => {
     it('displays general error when present', () => {
         const hookReturn = {
             ...defaultHookReturn,
-            generalError: 'A technical error occurred. Please try again.',
+            generalError: true,
         };
         renderLoginPage(hookReturn);
 

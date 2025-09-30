@@ -6,6 +6,7 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
+import { GeneralError } from '../../components/general-error/GeneralError';
 
 const RegisterPage: React.FC = () => {
     const {
@@ -92,11 +93,7 @@ const RegisterPage: React.FC = () => {
                         error={errors.confirmPassword}
                     />
 
-                    {generalError && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                            {generalError}
-                        </div>
-                    )}
+                    {generalError && <GeneralError />}
 
                     <Button type="submit" loading={isSubmitting}>
                         {isSubmitting ? 'Creating Account...' : 'Create Account'}

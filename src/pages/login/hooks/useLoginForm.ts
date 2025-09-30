@@ -22,7 +22,7 @@ export interface LoginFormErrors {
 export interface UseLoginFormReturn {
     formData: LoginFormData;
     errors: LoginFormErrors;
-    generalError?: string;
+    generalError: boolean;
     isSubmitting: boolean;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: React.FormEvent) => Promise<void>;
@@ -40,7 +40,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
         password: '',
     });
     const [errors, setErrors] = useState<LoginFormErrors>({});
-    const [generalError, setGeneralError] = useState<string | undefined>(undefined);
+    const [generalError, setGeneralError] = useState<boolean>(false);
 
     const loginMutation = useMutation({
         mutationFn: loginUser,
@@ -52,7 +52,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
             if (error.message.includes('500') || error.message.includes('failed')) {
                 setErrors({ password: 'Invalid username or password' });
             } else {
-                setGeneralError('A technical error occurred. Please try again.');
+                setGeneralError(true);
             }
         },
     });
@@ -68,7 +68,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
 
         // Clear general error when user starts typing
         if (generalError) {
-            setGeneralError(undefined);
+            setGeneralError(false);
         }
     };
 

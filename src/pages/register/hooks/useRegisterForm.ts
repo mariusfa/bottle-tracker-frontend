@@ -22,7 +22,7 @@ export interface RegisterFormErrors {
 export interface UseRegisterFormReturn {
     formData: RegisterFormData;
     errors: RegisterFormErrors;
-    generalError?: string;
+    generalError: boolean;
     isSubmitting: boolean;
     isSuccess: boolean;
     registeredUsername: string | null;
@@ -39,7 +39,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
         confirmPassword: '',
     });
     const [errors, setErrors] = useState<RegisterFormErrors>({});
-    const [generalError, setGeneralError] = useState<string | undefined>(undefined);
+    const [generalError, setGeneralError] = useState<boolean>(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [registeredUsername, setRegisteredUsername] = useState<string | null>(null);
 
@@ -53,7 +53,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
             if (error.message === 'User already exists') {
                 setErrors({ name: 'A user with this name already exists' });
             } else {
-                setGeneralError('A technical error occurred. Please try again.');
+                setGeneralError(true);
             }
         },
     });
@@ -69,7 +69,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
 
         // Clear general error when user starts typing
         if (generalError) {
-            setGeneralError(undefined);
+            setGeneralError(false);
         }
     };
 
@@ -119,7 +119,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
     const resetForm = () => {
         setFormData({ name: '', password: '', confirmPassword: '' });
         setErrors({});
-        setGeneralError(undefined);
+        setGeneralError(false);
         setIsSuccess(false);
         setRegisteredUsername(null);
     };
