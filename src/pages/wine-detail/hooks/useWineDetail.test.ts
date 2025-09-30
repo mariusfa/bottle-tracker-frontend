@@ -84,7 +84,7 @@ describe('useWineDetail', () => {
     });
 
     it('should not make API call when wineId is undefined', () => {
-        const { result } = renderHook(() => useWineDetail(undefined as any), {
+        const { result } = renderHook(() => useWineDetail(undefined as unknown as string), {
             wrapper: createWrapper(),
         });
 

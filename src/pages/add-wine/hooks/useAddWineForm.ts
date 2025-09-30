@@ -48,6 +48,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
         if (initialBarcode && !externalWineResult) {
             fetchExternalWineData(initialBarcode);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialBarcode]);
 
     const createWineMutation = useMutation({
@@ -56,8 +57,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
             // Navigate to wine collection page to see the newly added wine
             navigate({ to: '/wines' });
         },
-        onError: (error: Error) => {
-            console.error('Add wine error:', error);
+        onError: () => {
             setSubmitError(true);
         },
     });
@@ -79,8 +79,7 @@ const useAddWineForm = (): UseAddWineFormReturn => {
                 type: prev.type, // Keep existing selection for now
             }));
         },
-        onError: (error: Error) => {
-            console.log('External wine not found:', error.message);
+        onError: () => {
             setExternalWineResult({
                 found: false,
             });
@@ -89,7 +88,11 @@ const useAddWineForm = (): UseAddWineFormReturn => {
 
     const fetchExternalWineData = async (barcode: string) => {
         if (barcode.trim()) {
-            await externalWineMutation.mutateAsync(barcode);
+            try {
+                await externalWineMutation.mutateAsync(barcode);
+            } catch {
+                // Error handled by mutation's onError
+            }
         }
     };
 
@@ -155,7 +158,11 @@ const useAddWineForm = (): UseAddWineFormReturn => {
             wineData.vintage_year = parseInt(formData.vintageYear, 10);
         }
 
-        await createWineMutation.mutateAsync(wineData);
+        try {
+            await createWineMutation.mutateAsync(wineData);
+        } catch {
+            // Error handled by mutation's onError
+        }
     };
 
     const resetForm = () => {
