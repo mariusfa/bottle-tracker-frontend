@@ -59,7 +59,11 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Remove spaces from name field
+        const processedValue = name === 'name' ? value.replace(/\s/g, '') : value;
+
+        setFormData(prev => ({ ...prev, [name]: processedValue }));
 
         // Clear field error when user starts typing
         if (errors[name as keyof LoginFormErrors]) {
@@ -76,7 +80,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
         const newErrors: LoginFormErrors = {};
 
         // Name validation
-        if (!formData.name.trim()) {
+        if (!formData.name) {
             newErrors.name = 'Name is required';
         }
 
@@ -97,7 +101,7 @@ const useLoginForm = ({ initialUsername = '' }: UseLoginFormProps = {}): UseLogi
         }
 
         const userData: LoginUserRequest = {
-            name: formData.name.trim(),
+            name: formData.name,
             password: formData.password,
         };
 

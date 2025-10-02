@@ -64,12 +64,12 @@ describe('useLoginForm', () => {
 
         act(() => {
             const mockEvent = {
-                target: { name: 'name', value: 'John Doe' },
+                target: { name: 'name', value: 'JohnDoe' },
             } as React.ChangeEvent<HTMLInputElement>;
             result.current.handleInputChange(mockEvent);
         });
 
-        expect(result.current.formData.name).toBe('John Doe');
+        expect(result.current.formData.name).toBe('JohnDoe');
     });
 
     it('clears errors when user starts typing in a field with errors', () => {
@@ -238,7 +238,7 @@ describe('useLoginForm', () => {
             // Set up valid form data
             act(() => {
                 result.current.handleInputChange({
-                    target: { name: 'name', value: '  John Doe  ' },
+                    target: { name: 'name', value: 'JohnDoe' },
                 } as React.ChangeEvent<HTMLInputElement>);
                 result.current.handleInputChange({
                     target: { name: 'password', value: 'password123' },
@@ -256,7 +256,7 @@ describe('useLoginForm', () => {
 
             expect(mockPreventDefault).toHaveBeenCalled();
             expect(mockLoginUser).toHaveBeenCalledWith({
-                name: 'John Doe', // Should be trimmed
+                name: 'JohnDoe',
                 password: 'password123',
             });
             expect(result.current.generalError).toBe(false);

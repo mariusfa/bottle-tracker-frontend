@@ -46,7 +46,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
     const registerMutation = useMutation({
         mutationFn: registerUser,
         onSuccess: () => {
-            setRegisteredUsername(formData.name.trim());
+            setRegisteredUsername(formData.name);
             setIsSuccess(true);
         },
         onError: (error: Error) => {
@@ -60,7 +60,11 @@ const useRegisterForm = (): UseRegisterFormReturn => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Remove spaces from name field
+        const processedValue = name === 'name' ? value.replace(/\s/g, '') : value;
+
+        setFormData(prev => ({ ...prev, [name]: processedValue }));
 
         // Clear field error when user starts typing
         if (errors[name as keyof RegisterFormErrors]) {
@@ -77,9 +81,9 @@ const useRegisterForm = (): UseRegisterFormReturn => {
         const newErrors: RegisterFormErrors = {};
 
         // Name validation
-        if (!formData.name.trim()) {
+        if (!formData.name) {
             newErrors.name = 'Name is required';
-        } else if (formData.name.trim().length < 2) {
+        } else if (formData.name.length < 2) {
             newErrors.name = 'Name must be at least 2 characters';
         }
 
@@ -109,7 +113,7 @@ const useRegisterForm = (): UseRegisterFormReturn => {
         }
 
         const userData: RegisterUserRequest = {
-            name: formData.name.trim(),
+            name: formData.name,
             password: formData.password,
         };
 

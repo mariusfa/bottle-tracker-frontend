@@ -53,12 +53,12 @@ describe('useRegisterForm', () => {
 
         act(() => {
             const mockEvent = {
-                target: { name: 'name', value: 'John Doe' },
+                target: { name: 'name', value: 'JohnDoe' },
             } as React.ChangeEvent<HTMLInputElement>;
             result.current.handleInputChange(mockEvent);
         });
 
-        expect(result.current.formData.name).toBe('John Doe');
+        expect(result.current.formData.name).toBe('JohnDoe');
     });
 
     it('clears errors when user starts typing in a field with errors', () => {
@@ -324,7 +324,7 @@ describe('useRegisterForm', () => {
             // Set up valid form data
             act(() => {
                 result.current.handleInputChange({
-                    target: { name: 'name', value: '  John Doe  ' },
+                    target: { name: 'name', value: 'JohnDoe' },
                 } as React.ChangeEvent<HTMLInputElement>);
                 result.current.handleInputChange({
                     target: { name: 'password', value: 'password123' },
@@ -345,11 +345,11 @@ describe('useRegisterForm', () => {
 
             expect(mockPreventDefault).toHaveBeenCalled();
             expect(mockRegisterUser).toHaveBeenCalledWith({
-                name: 'John Doe', // Should be trimmed
+                name: 'JohnDoe',
                 password: 'password123',
             });
             expect(result.current.isSuccess).toBe(true);
-            expect(result.current.registeredUsername).toBe('John Doe');
+            expect(result.current.registeredUsername).toBe('JohnDoe');
         });
 
         it('handles user already exists error', async () => {
@@ -461,7 +461,7 @@ describe('useRegisterForm', () => {
             // Set some form data and success state
             act(() => {
                 result.current.handleInputChange({
-                    target: { name: 'name', value: 'John Doe' },
+                    target: { name: 'name', value: 'JohnDoe' },
                 } as React.ChangeEvent<HTMLInputElement>);
                 result.current.handleInputChange({
                     target: { name: 'password', value: 'password123' },
@@ -486,7 +486,7 @@ describe('useRegisterForm', () => {
                 await vi.waitFor(() => expect(result.current.isSuccess).toBe(true));
             });
 
-            expect(result.current.registeredUsername).toBe('John Doe');
+            expect(result.current.registeredUsername).toBe('JohnDoe');
 
             // Reset form
             act(() => {
