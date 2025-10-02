@@ -42,7 +42,7 @@ describe('useRegisterForm', () => {
             confirmPassword: '',
         });
         expect(result.current.errors).toEqual({});
-        expect(result.current.generalError).toBeUndefined();
+        expect(result.current.generalError).toBe(false);
         expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -110,7 +110,7 @@ describe('useRegisterForm', () => {
         });
 
         // Verify general error is set
-        expect(result.current.generalError).toBe('A technical error occurred. Please try again.');
+        expect(result.current.generalError).toBe(true);
 
         // Now clear the mock and type in a field
         mockRegisterUser.mockClear();
@@ -123,7 +123,7 @@ describe('useRegisterForm', () => {
         });
 
         // General error should be cleared
-        expect(result.current.generalError).toBeUndefined();
+        expect(result.current.generalError).toBe(false);
     });
 
     describe('validateForm', () => {
@@ -378,7 +378,7 @@ describe('useRegisterForm', () => {
             });
 
             expect(result.current.errors.name).toBe('A user with this name already exists');
-            expect(result.current.generalError).toBeUndefined();
+            expect(result.current.generalError).toBe(false);
         });
 
         it('handles generic registration errors with generalError', async () => {
@@ -406,9 +406,7 @@ describe('useRegisterForm', () => {
                 await result.current.handleSubmit(mockEvent);
             });
 
-            expect(result.current.generalError).toBe(
-                'A technical error occurred. Please try again.'
-            );
+            expect(result.current.generalError).toBe(true);
             expect(result.current.errors.name).toBeUndefined();
         });
 

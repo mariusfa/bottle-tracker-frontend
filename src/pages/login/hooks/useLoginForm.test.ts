@@ -53,7 +53,7 @@ describe('useLoginForm', () => {
             password: '',
         });
         expect(result.current.errors).toEqual({});
-        expect(result.current.generalError).toBeUndefined();
+        expect(result.current.generalError).toBe(false);
         expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -118,7 +118,7 @@ describe('useLoginForm', () => {
         });
 
         // Verify general error is set
-        expect(result.current.generalError).toBe('A technical error occurred. Please try again.');
+        expect(result.current.generalError).toBe(true);
 
         // Now clear the mock and type in a field
         mockLoginUser.mockClear();
@@ -131,7 +131,7 @@ describe('useLoginForm', () => {
         });
 
         // General error should be cleared
-        expect(result.current.generalError).toBeUndefined();
+        expect(result.current.generalError).toBe(false);
     });
 
     describe('validateForm', () => {
@@ -259,7 +259,7 @@ describe('useLoginForm', () => {
                 name: 'John Doe', // Should be trimmed
                 password: 'password123',
             });
-            expect(result.current.generalError).toBeUndefined();
+            expect(result.current.generalError).toBe(false);
         });
 
         it('navigates to home page on successful login', async () => {
@@ -340,7 +340,7 @@ describe('useLoginForm', () => {
             });
 
             expect(result.current.errors.password).toBe('Invalid username or password');
-            expect(result.current.generalError).toBeUndefined();
+            expect(result.current.generalError).toBe(false);
         });
 
         it('handles generic login errors with generalError', async () => {
@@ -365,9 +365,7 @@ describe('useLoginForm', () => {
                 await result.current.handleSubmit(mockEvent);
             });
 
-            expect(result.current.generalError).toBe(
-                'A technical error occurred. Please try again.'
-            );
+            expect(result.current.generalError).toBe(true);
             expect(result.current.errors.password).toBeUndefined();
         });
 
