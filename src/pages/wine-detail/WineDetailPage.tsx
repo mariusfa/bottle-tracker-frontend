@@ -91,8 +91,12 @@ const WineDetailPage: React.FC = () => {
 
                     {/* Actions */}
                     <div className="flex gap-4">
-                        <Button>Edit</Button>
-                        <Button variant="secondary">Delete</Button>
+                        <Link to="/edit-wine/$id" params={{ id: wine.id }} className="flex-1">
+                            <Button>Edit</Button>
+                        </Link>
+                        <div className="flex-1">
+                            <Button variant="secondary">Delete</Button>
+                        </div>
                     </div>
                 </div>
             </Card>
