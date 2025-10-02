@@ -29,11 +29,18 @@ vi.mock('./hooks/useWineDetail', () => ({
     useWineDetail: vi.fn(),
 }));
 
+// Mock the useDeleteWine hook
+vi.mock('./hooks/useDeleteWine', () => ({
+    useDeleteWine: vi.fn(),
+}));
+
 // Import after mocking
 import { useParams } from '@tanstack/react-router';
+import { useDeleteWine } from './hooks/useDeleteWine';
 
 const mockUseParams = vi.mocked(useParams);
 const mockUseWineDetail = vi.mocked(useWineDetail);
+const mockUseDeleteWine = vi.mocked(useDeleteWine);
 
 const mockWineData: GetWineDTO = {
     id: 'test-wine-id',
@@ -49,6 +56,11 @@ describe('WineDetailPage', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockUseParams.mockReturnValue({ id: 'test-wine-id' });
+        mockUseDeleteWine.mockReturnValue({
+            deleteWine: vi.fn(),
+            isDeleting: false,
+            error: null,
+        });
     });
 
     it('shows loading state while fetching wine data', () => {
@@ -262,5 +274,31 @@ describe('WineDetailPage', () => {
 
         expect(screen.getByText('Barcode')).toBeInTheDocument();
         expect(screen.getByText('1234567890123')).toBeInTheDocument();
+    });
+
+    it('renders delete confirmation dialog', () => {
+        mockUseWineDetail.mockReturnValue({
+            wine: mockWineData,
+            isLoading: false,
+            error: null,
+        });
+
+        render(<WineDetailPage />);
+
+        const dialog = screen.getByRole('dialog', { hidden: true });
+        expect(dialog).toBeInTheDocument();
+    });
+
+    it('calls useDeleteWine with correct wine ID', () => {
+        mockUseParams.mockReturnValue({ id: 'specific-wine-id' });
+        mockUseWineDetail.mockReturnValue({
+            wine: mockWineData,
+            isLoading: false,
+            error: null,
+        });
+
+        render(<WineDetailPage />);
+
+        expect(mockUseDeleteWine).toHaveBeenCalledWith('specific-wine-id');
     });
 });

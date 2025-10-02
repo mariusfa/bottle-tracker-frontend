@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useParams, Link } from '@tanstack/react-router';
 import { Card } from '../../components/card/Card';
 import { PageHeader } from '../../components/page-header/PageHeader';
 import { PageLayout } from '../../components/page-layout/PageLayout';
 import { Button } from '../../components/button/Button';
 import { RatingBadge } from '../../components/rating-badge/RatingBadge';
+import { ConfirmDialog } from '../../components/confirm-dialog/ConfirmDialog';
+import type { ConfirmDialogRef } from '../../components/confirm-dialog/ConfirmDialog';
 import { useWineDetail } from './hooks/useWineDetail';
+import { useDeleteWine } from './hooks/useDeleteWine';
 
 const WineDetailPage: React.FC = () => {
     const { id } = useParams({ strict: false });
     const { wine, isLoading, error } = useWineDetail(id as string);
+    const { deleteWine: handleDeleteWine, isDeleting, error: deleteError } = useDeleteWine(id as string);
+    const deleteDialogRef = useRef<ConfirmDialogRef>(null);
+
+    const openDeleteDialog = () => {
+        deleteDialogRef.current?.showModal();
+    };
 
     if (isLoading) {
         return (
@@ -95,11 +104,25 @@ const WineDetailPage: React.FC = () => {
                             <Button>Edit</Button>
                         </Link>
                         <div className="flex-1">
-                            <Button variant="secondary">Delete</Button>
+                            <Button variant="secondary" onClick={openDeleteDialog}>
+                                Delete
+                            </Button>
                         </div>
                     </div>
                 </div>
             </Card>
+
+            <ConfirmDialog
+                ref={deleteDialogRef}
+                title="Delete Wine"
+                message={`Are you sure you want to delete "${wine.name}"? This action cannot be undone.`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={handleDeleteWine}
+                isLoading={isDeleting}
+                error={deleteError}
+                variant="danger"
+            />
         </PageLayout>
     );
 };
